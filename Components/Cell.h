@@ -1,7 +1,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include "CellState"
+#include "CellState.h"
 
 /*
 La classe Cell représente une cellule du jeu. Elle ne
@@ -54,3 +54,15 @@ public:
 		}
 	return *this;
 	}
+	//Vérifie si la cellule est vivante en déléguant au state
+	bool isAlive() const {
+        return state->isAlive();
+    }
+	//Méthode pour changer l'état de la cellule
+	void setState(CellState* newState) {
+    	state.reset(newState);
+	}
+
+
+};
+#endif

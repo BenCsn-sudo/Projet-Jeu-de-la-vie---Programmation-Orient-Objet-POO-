@@ -3,6 +3,9 @@
 
 #include <vector>	// Pour utiliser les vecteurs
 
+#include "DeadState.h"
+#include "Cell.h"
+
 class Grid {
 private:
 	int width;
@@ -16,6 +19,20 @@ private:
 	Cell** (désuet). Alors qu'avec notre méthode on a:
 	- taille construite à l'exécution
 	- gestion automatique de la mémoire
-	
+
 	*/
 	std::vector<std::vector<Cell>> cells;
+public:
+	// Constructeur : initialise la grille avec des cellules mortes
+	// Il va falloir changer cette partie pour initialiser avec les données du .txt
+	Grid(int w, int h);
+
+	//getter pour voir la grille:
+	void print() const;
+
+	//Changement des états des cellules
+	void setAlive(int row, int col);
+	void setDead(int row, int col);
+
+};
+#endif
