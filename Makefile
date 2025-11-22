@@ -1,36 +1,32 @@
-# Compilateur et options
-CXX      := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Wpedantic -O2
+CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -O2
 
-# Dossier contenant le code
-COMP_DIR := Components
+COMPONENTS = Components
+SERVICES = Services
+IHM = Ihm
 
-# Fichiers source trouvés automatiquement
-SRC := $(wildcard $(COMP_DIR)/*.cpp)
-MAIN := main.cpp
+SRCS = \
+    $(wildcard $(COMPONENTS)/*.cpp) \
+    $(wildcard $(SERVICES)/*.cpp) \
+    $(wildcard $(IHM)/*.cpp) \
+    main.cpp
 
-# Objets générés
-OBJ := $(SRC:.cpp=.o) $(MAIN:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o)
 
-# Nom de l'exécutable final
-TARGET := game_of_life
+TARGET = game_of_life
 
-# Règle par défaut
 all: $(TARGET)
 
-# Edition de liens
-$(TARGET): $(OBJ)
-	$(CXX) $(OBJ) -o $@
-# Compilation des .cpp en .o
-$(COMP_DIR)/%.o: $(COMP_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-# Nettoyage
-clean:
-	rm -f $(OBJ) $(TARGET)
-
-# Exécution rapide
-run: $(TARGET)
-	./$(TARGET)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS)
+
+mrproper: clean
+	rm -f $(TARGET)
+
+.PHONY: all clean mrproper

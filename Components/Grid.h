@@ -27,12 +27,28 @@ public:
 	// Il va falloir changer cette partie pour initialiser avec les données du .txt
 	Grid(int w, int h);
 
-	//getter pour voir la grille:
+	// Afficher la grille:
 	void print() const;
 
-	//Changement des états des cellules
+	// Setters des états des cellules
 	void setAlive(int row, int col);
 	void setDead(int row, int col);
 
+	// Getters largeur et hauteur
+	int getWidth() const { return width; }
+	int getHeight() const { return height; }
+
+	// Accès en lecture/écriture à une cellule de la grille.
+	Cell& getCell(int row, int col) { return cells[row][col]; }
+
+	/*
+	Version const de l'accès : utilisée lorsque l'objet Grid
+	est lui-même const. Retourne une référence const,
+	empêchant toute modification de la cellule.
+	Exemple : dans FileWriter, où on ne fait que lire.
+	*/
+	const Cell& getCell(int row, int col) const { return cells[row][col]; }
+
 };
 #endif
+

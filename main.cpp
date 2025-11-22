@@ -1,37 +1,23 @@
-#include <iostream>
-#include <fstream>
-
-#include "Components/Cell.h"
-#include "Components/AliveState.h"
-#include "Components/DeadState.h"
-#include "Components/Grid.h"
+#include "Services/FileName.h"
+#include "Services/FolderManager.h"
+#include "Services/FileReader.h"
+#include "Services/FileWriter.h"
 
 int main() {
-    int width, height;
-    std::ifstream file("input.txt");
-    if (!file) {
-        std::cerr << "Erreur : impossible d'ouvrir input.txt" << std::endl;
-        return 1;
-    }
+    std::string input = "input.txt";
 
-    file >> height >> width;
+    FileReader reader;
+    Grid g = reader.read(input);
 
-    std::cout << "Dimensions lues : " << height << " (hauteur) x " << width << " (largeur)"<< std::endl;
-    Grid g(width, height); //Création de la grille toute morte
-    //Assignment des cellules vivantes selon les données du fichir input.txt
-    for (int r = 0; r < height; r++) {
-        for (int c = 0; c < width; c++) {
-            int val;
-            file >> val;
+    // Génération du nom du dossier et création
+    std::string folder = FileName::getOutputFolder(input);
+    FolderManager::createFolder(folder);
 
-            if (val == 1) {
-                g.setAlive(r, c);
-            } else {
-                g.setDead(r, c);
-            }
-        }
-    }
-    g.print();
+    // Génération d'un nom de fichier pour la première itération
+    FileWriter writer;
+    std::string outFile = folder + "/grid_1.txt";
+
+    writer.write(g, outFile);
 
     return 0;
 }

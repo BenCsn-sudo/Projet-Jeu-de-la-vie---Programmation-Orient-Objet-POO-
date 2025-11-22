@@ -56,13 +56,11 @@ public:
 	}
 	//Vérifie si la cellule est vivante en déléguant au state
 	bool isAlive() const {
-        return state->isAlive();
+        	return state->isAlive();
     }
 	//Méthode pour changer l'état de la cellule
 	void setState(CellState* newState) {
-    	state.reset(newState);
+    		state.reset(newState);
 	}
-
-
 };
 #endif
