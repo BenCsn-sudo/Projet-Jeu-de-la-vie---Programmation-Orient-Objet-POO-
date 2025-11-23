@@ -3,8 +3,9 @@
 
 #include <vector>	// Pour utiliser les vecteurs
 
-#include "DeadState.h"
-#include "Cell.h"
+#include "../Cell/DeadState.h"
+#include "../Cell/Cell.h"
+#include "../Rules/Rules.h"
 
 class Grid {
 private:
@@ -19,7 +20,6 @@ private:
 	Cell** (désuet). Alors qu'avec notre méthode on a:
 	- taille construite à l'exécution
 	- gestion automatique de la mémoire
-
 	*/
 	std::vector<std::vector<Cell>> cells;
 public:
@@ -49,6 +49,10 @@ public:
 	*/
 	const Cell& getCell(int row, int col) const { return cells[row][col]; }
 
+	// Compte le nombre de voisins vivants autour de la cellule (row, col)
+	int countLivingNeighbours(int row, int col) const;
+
+	// Calcule la prochaine génération de la grille en appliquant les règles
+	void nextGeneration(const Rules& rule);
 };
 #endif
-

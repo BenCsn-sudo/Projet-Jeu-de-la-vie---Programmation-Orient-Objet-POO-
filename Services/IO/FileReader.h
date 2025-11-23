@@ -2,7 +2,7 @@
 #define FILEREADER_H
 
 #include <string>
-#include "../Components/Grid.h"
+#include "../../Components/Grid/Grid.h"
 
 /*
 Classe pour la lecture d'une grille depuis un fichier texte.

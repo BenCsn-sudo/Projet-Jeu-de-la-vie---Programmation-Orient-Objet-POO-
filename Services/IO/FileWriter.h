@@ -2,7 +2,7 @@
 #define FILEWRITER_H
 
 #include <string>
-#include "../Components/Grid.h"
+#include "../../Components/Grid/Grid.h"
 
 /*
 Classe pour sauvegarder une grille dans un fichier texte.

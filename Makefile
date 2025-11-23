@@ -1,32 +1,42 @@
-CXX = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra -O2
+#  Makefile pour le projet Jeu de la Vie
+#  Supporte l’arborescence avec sous-dossiers Components/ et Services/
+CXX      = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2
 
-COMPONENTS = Components
-SERVICES = Services
-IHM = Ihm
+# Répertoires
+SRCDIR   = .
+BUILDDIR = build
+BINDIR   = Exe
 
-SRCS = \
-    $(wildcard $(COMPONENTS)/*.cpp) \
-    $(wildcard $(SERVICES)/*.cpp) \
-    $(wildcard $(IHM)/*.cpp) \
-    main.cpp
+# Trouve automatiquement tous les fichiers .cpp du projet
+SOURCES  = $(shell find $(SRCDIR) -type f -name "*.cpp")
 
-OBJS = $(SRCS:.cpp=.o)
+# Transforme chaque .cpp en .o (dans build/)
+OBJECTS  = $(patsubst %.cpp,$(BUILDDIR)/%.o,$(SOURCES))
 
-TARGET = game_of_life
+# Nom de l’exécutable final
+TARGET   = $(BINDIR)/jeu_de_la_vie
 
+# Règle principale
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+# Construction de l’exécutable
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(BINDIR)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+	@echo "✔ Build terminé : $(TARGET)"
 
-%.o: %.cpp
+# Compilation des .cpp → .o dans build/
+$(BUILDDIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Nettoyage
 clean:
-	rm -f $(OBJS)
+	rm -rf $(BUILDDIR) $(BINDIR)
+	@echo "✔ Nettoyage terminé."
 
-mrproper: clean
-	rm -f $(TARGET)
+# Exécution
+run: all
+	./$(TARGET)
 
-.PHONY: all clean mrproper
