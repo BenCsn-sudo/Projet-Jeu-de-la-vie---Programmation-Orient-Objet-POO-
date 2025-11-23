@@ -5,6 +5,7 @@
 
 #include "DeadState.h"
 #include "Cell.h"
+#include "CellRule.h"
 
 class Grid {
 private:
@@ -48,6 +49,12 @@ public:
 	Exemple : dans FileWriter, où on ne fait que lire.
 	*/
 	const Cell& getCell(int row, int col) const { return cells[row][col]; }
+
+	// Compte le nombre de voisins vivants autour de la cellule (row, col)
+	int countLivingNeighbours(int row, int col) const;
+
+	// Calcule la prochaine génération de la grille en appliquant les règles
+	void nextGeneration(const CellRule& rule);
 
 };
 #endif

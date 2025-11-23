@@ -6,7 +6,7 @@
 
 class AliveState : public CellState {
 public:
-	// Constructeur
+	// Constructeurs
 	AliveState() = default;
 
 	bool isAlive() const override;

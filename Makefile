@@ -1,14 +1,18 @@
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -Wextra -O2
+CXXFLAGS = -std=c++20 -Wall -Wextra -O2 -IComponents -IServices -IIhm -IRules -IGame
 
 COMPONENTS = Components
 SERVICES = Services
 IHM = Ihm
+RULES = Rules
+GAME = Game
 
 SRCS = \
     $(wildcard $(COMPONENTS)/*.cpp) \
     $(wildcard $(SERVICES)/*.cpp) \
     $(wildcard $(IHM)/*.cpp) \
+    $(wildcard $(RULES)/*.cpp) \
+    $(wildcard $(GAME)/*.cpp) \
     main.cpp
 
 OBJS = $(SRCS:.cpp=.o)
