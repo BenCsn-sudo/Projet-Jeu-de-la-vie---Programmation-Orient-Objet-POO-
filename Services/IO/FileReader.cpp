@@ -2,17 +2,19 @@
 #include <fstream>
 #include <iostream>
 
+using namespace std;
+
 /*
 Implémentation du lecteur de grille: on lit la taille puis on reconstruit 
 celle par cellule en utilisant Grid.
 */
-Grid FileReader::read(const std::string& path) const {
+Grid FileReader::read(const string& path) const {
 
-	std::ifstream file(path);
+	ifstream file(path);
 
-	// On vérifie si le fichier existe
+	// On verifie si le fichier existe
 	if (!file) {
-		std::cerr << "Erreur : impossible d'ouvrir" << path << std::endl;
+		cerr << "Erreur : impossible d'ouvrir " << path << endl;
 
 		// Retourne une grille vide en cas d'erreur
 		return Grid(0, 0);
@@ -21,9 +23,9 @@ Grid FileReader::read(const std::string& path) const {
 	int height, width;
 
 	/*
-	On récupère la largeur et la longueur de la matrice (dans cet ordre)
-	On utilise '>>' car prend valeur après valeur en s'arrêtant a chaque
-	espace (donc la matrice doit etre séparé par espace et pas compact)
+	On recupere la largeur et la longueur de la matrice (dans cet ordre)
+	On utilise '>>' car prend valeur apres valeur en s'arretant a chaque
+	espace (donc la matrice doit etre separee par espace et pas compact)
 	*/
 	file >> height >> width;
 

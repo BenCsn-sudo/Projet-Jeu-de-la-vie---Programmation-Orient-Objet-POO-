@@ -2,14 +2,16 @@
 #include <filesystem>
 #include <iostream>
 
-namespace fs = std::filesystem;
+using namespace std;
 
-void FolderManager::createFolder(const std::string& folderPath) {
+namespace fs = filesystem;
+
+void FolderManager::createFolder(const string& folderPath) {
 	try {
 		fs::create_directories(folderPath);
 	}
 	catch (const fs::filesystem_error& e) {
-		std::cerr << "Erreur : impossible de créer le dossier \"" << folderPath
-			  << "\" : " << e.what() << std::endl;
+		cerr << "Erreur : impossible de creer le dossier \"" << folderPath
+			  << "\" : " << e.what() << endl;
 	}
 }

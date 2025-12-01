@@ -1,5 +1,9 @@
 #include "GameWindow.h"
 #include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
 
 GameWindow::GameWindow(Grid& g, const Rules& r, int winSize, int delay)
     : grid(g), rule(r), windowSize(winSize), iterationDelay(delay),
@@ -11,24 +15,50 @@ GameWindow::GameWindow(Grid& g, const Rules& r, int winSize, int delay)
 
     float cellW = static_cast<float>(windowSize) / cols;
     float cellH = static_cast<float>(windowSize) / rows;
-    cellSize = std::min(cellW, cellH);
+    cellSize = min(cellW, cellH);
 
     cellShape.setSize(sf::Vector2f(cellSize, cellSize));
 
-    // Chargement police pour afficher l’itération
-    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")) {
-        std::cerr << "Erreur : impossible de charger la police.\n";
+    // Chargement police multi-plateforme (essai de plusieurs chemins)
+    bool fontLoaded = false;
+    
+    // Liste de polices a essayer (monospace pour style "code/matrice")
+    vector<string> fontPaths = {
+        // Windows - Polices monospace (style retro/tech)
+        "C:/Windows/Fonts/consola.ttf",      // Consolas (monospace, style moderne)
+        "C:/Windows/Fonts/cour.ttf",         // Courier New
+        "C:/Windows/Fonts/lucon.ttf",        // Lucida Console
+        // Linux
+        "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
+        "/usr/share/fonts/truetype/ubuntu/UbuntuMono-R.ttf",
+        // MacOS
+        "/System/Library/Fonts/Courier.dfont",
+        "/Library/Fonts/Courier New.ttf"
+    };
+    
+    for (const auto& path : fontPaths) {
+        if (font.loadFromFile(path)) {
+            fontLoaded = true;
+            std::cout << "Police chargee : " << path << std::endl;
+            break;
+        }
     }
+    
+    if (!fontLoaded) {
+        cerr << "AVERTISSEMENT : Aucune police trouvee. Le texte ne s'affichera pas correctement.\n";
+    }
+    
     text.setFont(font);
     text.setCharacterSize(20);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(sf::Color::Green);  // Vert style "Matrix" pour theme retro
     text.setPosition(10, 10);
 }
 
 void GameWindow::run() {
     while (window.isOpen()) {
 
-        // Gestion événements clavier/fenêtre
+        // Gestion evenements clavier/fenetre
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -36,7 +66,7 @@ void GameWindow::run() {
 
             if (event.type == sf::Event::KeyPressed) {
 
-                // accélérer
+                // accelerer
                 if (event.key.code == sf::Keyboard::Up && iterationDelay > 20)
                     iterationDelay -= 20;
 
@@ -50,7 +80,7 @@ void GameWindow::run() {
             }
         }
 
-        // Avance d’une génération toutes les X ms
+        // Avance d'une generation toutes les X ms
         if (clock.getElapsedTime().asMilliseconds() >= iterationDelay) {
             update();
             clock.restart();
@@ -70,8 +100,8 @@ void GameWindow::update() {
 }
 
 void GameWindow::drawInfo() {
-    text.setString("Iteration : " + std::to_string(iterationCount) +
-                   "\nDelay : " + std::to_string(iterationDelay) + " ms");
+    text.setString("Iteration : " + to_string(iterationCount) +
+                   "\nDelay : " + to_string(iterationDelay) + " ms");
 
     window.draw(text);
 }
@@ -87,7 +117,7 @@ void GameWindow::drawGrid() {
             if (grid.getCell(r, c).isAlive())
                 cellShape.setFillColor(sf::Color::White);
             else
-                cellShape.setFillColor(sf::Color(30, 30, 30)); // gris foncé
+                cellShape.setFillColor(sf::Color(30, 30, 30)); // gris fonce
 
             cellShape.setPosition(c * cellSize, r * cellSize);
             window.draw(cellShape);

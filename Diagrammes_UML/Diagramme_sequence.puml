@@ -1,0 +1,73 @@
+@startuml
+title Diagramme de Sequence - Jeu de la Vie
+
+actor Utilisateur
+participant "main" as Main
+participant "FileReader" as Reader
+participant "Grid" as Grid
+participant "Game" as Game
+participant "StandardRule" as Rule
+
+Utilisateur -> Main : Lance programme
+activate Main
+
+Main -> Reader : read("input.txt")
+activate Reader
+
+Reader -> Reader : Lit fichier\n(dimensions + matrice)
+
+Reader -> Grid : new Grid(width, height)
+activate Grid
+
+loop Pour chaque cellule
+  Reader -> Grid : setAlive(row, col) ou setDead(row, col)
+end
+
+Reader --> Main : Retourne grille
+deactivate Reader
+
+Main -> Rule : new StandardRule()
+activate Rule
+
+Main -> Game : new Game(grid, rule, iterations)
+activate Game
+
+loop Pour N iterations
+  
+  Main -> Game : nextStep()
+  
+  Game -> Grid : nextGeneration(rule)
+  
+  loop Pour chaque cellule
+    Grid -> Grid : countLivingNeighbours(row, col)
+    Grid --> Grid : nb_voisins
+    
+    Grid -> Rule : willBeAlive(etat_actuel, nb_voisins)
+    
+    alt Cellule morte + 3 voisins
+      Rule --> Grid : true (naissance)
+    else Cellule vivante + 2-3 voisins
+      Rule --> Grid : true (survie)
+    else Autres cas
+      Rule --> Grid : false (mort)
+    end
+    
+    Grid -> Grid : Met a jour cellule
+  end
+  
+  Grid --> Game : Nouvelle generation
+  
+  Game -> Game : Sauvegarde etat dans fichier
+  
+end
+
+Game --> Main : Simulation terminee
+
+Main --> Utilisateur : Affiche resultats
+
+deactivate Game
+deactivate Rule
+deactivate Grid
+deactivate Main
+
+@enduml
