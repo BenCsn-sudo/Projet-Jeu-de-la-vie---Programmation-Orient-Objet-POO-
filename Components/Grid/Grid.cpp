@@ -56,6 +56,7 @@ void Grid::toggleCell(int row, int col) {
 
 
 // Compte le nombre de voisins vivants autour de la cellule (row, col)
+// GRILLE TORIQUE : les bords se rejoignent (comme un donut)
 int Grid::countLivingNeighbours(int row, int col) const {
 
     int count = 0;
@@ -68,15 +69,15 @@ int Grid::countLivingNeighbours(int row, int col) const {
     };
 
     for (const auto& d : directions) {
-        int newRow = row + d[0];
-        int newCol = col + d[1];
+        // Calcul de la position du voisin avec wraparound (modulo)
+        // Si newRow est négatif, on ajoute height pour revenir de l'autre côté
+        // Le modulo % assure que les valeurs restent dans [0, height-1] ou [0, width-1]
+        int newRow = (row + d[0] + height) % height;
+        int newCol = (col + d[1] + width) % width;
 
-        // Vérification des limites de la grille
-        if (newRow >= 0 && newRow < height && newCol >= 0 && newCol < width) {
-
-            if (cells[newRow][newCol].isAlive()) {
-                count++;
-            }
+        // Plus besoin de vérifier les limites car le modulo gère automatiquement
+        if (cells[newRow][newCol].isAlive()) {
+            count++;
         }
     }
 
