@@ -1,0 +1,45 @@
+@startuml
+title Diagramme d'Activite - Jeu de la Vie
+
+start
+
+:Lancer le programme;
+
+:Lire fichier d'entree;
+
+if (Fichier valide ?) then (non)
+  :Afficher erreur;
+  stop
+endif
+
+:Creer grille initiale\n(dimensions + cellules);
+
+:Initialiser regles Conway;
+
+:Demander nombre iterations;
+
+partition "Boucle principale" {
+  repeat
+    :Afficher grille actuelle;
+    
+    partition "Calcul nouvelle generation" {
+      :Pour chaque cellule\ncompter voisins vivants;
+      
+      :Appliquer regles Conway\n- Naissance: 3 voisins\n- Survie: 2-3 voisins\n- Mort: autres cas;
+      
+      :Mettre a jour grille;
+    }
+    
+    :Sauvegarder etat\ndans fichier;
+    
+    :Incrementer compteur;
+    
+  repeat while (Iterations restantes ?) is (oui)
+  -> non;
+}
+
+:Afficher resultat final;
+
+stop
+
+@enduml

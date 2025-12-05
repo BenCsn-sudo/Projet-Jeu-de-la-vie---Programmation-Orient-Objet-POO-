@@ -1,0 +1,154 @@
+@startuml JeuDeLaVie
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+' ===== PACKAGE: Components/Cell =====
+package "Components::Cell" #LightBlue {
+    abstract class CellState {
+        + {abstract} isAlive() : bool
+        + {abstract} clone() : unique_ptr<CellState>
+    }
+    
+    class AliveState {
+        + isAlive() : bool
+        + clone() : unique_ptr<CellState>
+    }
+    
+    class DeadState {
+        + isAlive() : bool
+        + clone() : unique_ptr<CellState>
+    }
+    
+    class Cell {
+        - state : unique_ptr<CellState>
+        + Cell(CellState*)
+        + Cell(const Cell&)
+        + operator=(const Cell&) : Cell&
+        + isAlive() : bool
+        + setState(CellState*) : void
+    }
+    
+    CellState <|-- AliveState
+    CellState <|-- DeadState
+    Cell *-- CellState
+}
+
+' ===== PACKAGE: Components/Rules =====
+package "Components::Rules" #LightGreen {
+    abstract class Rules {
+        + {abstract} willBeAlive(bool, int) : bool
+    }
+    
+    class StandardRule {
+        + willBeAlive(bool, int) : bool
+    }
+    
+    Rules <|-- StandardRule
+}
+
+' ===== PACKAGE: Components/Grid =====
+package "Components::Grid" #LightYellow {
+    class Grid {
+        - width : int
+        - height : int
+        - cells : vector<vector<Cell>>
+        + Grid(int, int)
+        + print() : void
+        + setAlive(int, int) : void
+        + setDead(int, int) : void
+        + getWidth() : int
+        + getHeight() : int
+        + getCell(int, int) : Cell&
+        + countLivingNeighbours(int, int) : int
+        + nextGeneration(const Rules&) : void
+    }
+    
+    Grid *-- Cell
+    Grid ..> Rules
+}
+
+' ===== PACKAGE: Components =====
+package "Components" #Wheat {
+    class Game {
+        - grid : Grid
+        - rule : const Rules&
+        - iterations : int
+        + Game(const Grid&, const Rules&, int)
+        + nextStep() : void
+        + print() : void
+        + getGrid() : const Grid&
+    }
+    
+    Game *-- Grid
+    Game --> Rules
+}
+
+' ===== PACKAGE: Services/IO =====
+package "Services::IO" #LightCoral {
+    class FileReader {
+        + read(const string&) : Grid
+    }
+    
+    class FileWriter {
+        + write(const Grid&, const string&) : void
+    }
+    
+    class FileName {
+        + extractBaseName(const string&) : string
+        + generateOutputName(const string&, int) : string
+    }
+    
+    class FolderManager {
+        + createOutputFolder(const string&) : void
+    }
+    
+    FileReader ..> Grid : <<create>>
+    FileWriter ..> Grid : <<use>>
+}
+
+' ===== PACKAGE: Services =====
+package "Services" #PaleGreen {
+    class GameRunner {
+        - inputFile : string
+        - maxIterations : int
+        + GameRunner()
+        + run() : void
+    }
+    
+    GameRunner --> FileReader
+    GameRunner --> FileWriter
+    GameRunner --> FileName
+    GameRunner --> FolderManager
+    GameRunner --> Game
+}
+
+' ===== PACKAGE: Ihm =====
+package "Ihm" #Lavender {
+    class GameWindow {
+        - window : sf::RenderWindow
+        - grid : Grid
+        - rule : const Rules&
+        - windowWidth : int
+        - windowHeight : int
+        - delay : int
+        + GameWindow(Grid&, const Rules&, int, int)
+        + run() : void
+        - draw() : void
+        - handleEvents() : void
+    }
+    
+    GameWindow --> Grid
+    GameWindow --> Rules
+}
+
+' ===== Légende =====
+legend right
+  |= Symbole |= Signification |
+  | <back:white>───▷</back> | Héritage |
+  | <back:white>───◆</back> | Composition |
+  | <back:white>───></back> | Association |
+  | <back:white>...></back> | Dépendance |
+endlegend
+
+@enduml

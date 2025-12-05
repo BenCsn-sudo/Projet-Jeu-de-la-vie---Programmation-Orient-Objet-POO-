@@ -2,17 +2,19 @@
 #include <fstream>
 #include <iostream>
 
+using namespace std;
+
 /*
 On se contente de convertir notre grid en texte et d'écrire
 le tout dans un fichier texte.
 */
-void FileWriter::write(const Grid& grid, const std::string& path) const {
+void FileWriter::write(const Grid& grid, const string& path) const {
 
-	std::ofstream out(path);
+	ofstream out(path);
 
-	// Vérifie que le fichier existe
+	// Verifie que le fichier existe
 	if (!out) {
-		std::cerr << "Erreur : impossible d'écrire dans " << path << std::endl;
+		cerr << "Erreur : impossible d'ecrire dans " << path << endl;
 		return;
 	}
 

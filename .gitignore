@@ -1,3 +1,28 @@
+# Build files
 *.o
 *.exe
+*.out
+*.app
 jeu_de_la_vie
+
+# IDE files
+.vscode/
+.vs/
+*.sln
+*.vcxproj*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+build/
+bin/
+obj/
+
+# SFML libraries (if locally stored)
+SFML/
+
+# Input/output files
+output.txt
+*.log
