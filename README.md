@@ -142,7 +142,8 @@ make
 Choisissez le mode d'execution :
   1. Mode Console (sauvegarde iterations dans fichiers)
   2. Mode Graphique (visualisation SFML)
-Votre choix (1 ou 2) :
+  3. Mode Test Unitaire (execute les 8 tests)
+Votre choix (1, 2 ou 3) :
 ```
 
 ---
@@ -226,6 +227,51 @@ Affiche la grille en temps reel avec une interface graphique SFML.
 - **Cellules mortes** : Gris fonce
 - **Texte** : Affiche iteration actuelle et delai
 - **Grille** : Bordures blanches
+
+---
+
+## Mode 3 : Tests Unitaires
+
+### Description
+Execute automatiquement les 8 tests unitaires pour verifier le bon fonctionnement du jeu.
+
+### Utilisation
+
+1. Choisir option **3**
+2. Les tests s'executent automatiquement
+
+### Tests executes
+
+Le mode test verifie :
+- Grille vide reste vide
+- Regle de naissance (3 voisins vivants)
+- Mort par isolement (< 2 voisins)
+- Survie (2-3 voisins)
+- Mort par surpopulation (> 3 voisins)
+- Motif stable "Block" 2x2
+- Comptage correct des voisins
+- Lecture de fichier
+
+### Resultat
+
+```
+========================================
+  Tests Unitaires - Jeu de la Vie
+========================================
+
+[OK] Test 1 : Grille vide reste vide
+[OK] Test 2 : Regle de naissance (3 voisins)
+[OK] Test 3 : Mort par sous-population (<2 voisins)
+[OK] Test 4 : Survie avec 2-3 voisins
+[OK] Test 5 : Mort par surpopulation (>3 voisins)
+[OK] Test 6 : Motif stable 'Block' 2x2
+[OK] Test 7 : Comptage correct de 8 voisins
+[OK] Test 8 : Lecture fichier input.txt
+
+========================================
+  Resultats : 8/8 tests passes
+========================================
+```
 
 ---
 

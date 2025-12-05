@@ -154,7 +154,8 @@ void test_file_reading() {
     cout << "[OK] Test 8 : Lecture fichier input.txt" << endl;
 }
 
-int main() {
+// Fonction pour executer tous les tests (appelable depuis main.cpp)
+void run_all_tests() {
     cout << "\n========================================" << endl;
     cout << "  Tests Unitaires - Jeu de la Vie" << endl;
     cout << "========================================\n" << endl;
@@ -172,11 +173,8 @@ int main() {
         cout << "\n========================================" << endl;
         cout << "  Resultats : 8/8 tests passes" << endl;
         cout << "========================================\n" << endl;
-        
-        return 0;
     }
     catch (const exception& e) {
         cerr << "\n[ERREUR] Test echoue : " << e.what() << endl;
-        return 1;
     }
 }

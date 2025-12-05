@@ -1,6 +1,6 @@
 # Manuel d'Utilisation - Jeu de la Vie (Conway)
 
-> **Pour utilisateur debutant** : Ce manuel vous explique comment utiliser le programme pas a pas, meme si vous n'avez jamais programme.
+> **Pour utilisateur debutant** : Ce manuel vous explique comment utiliser le programme pas a pas.
 
 ---
 
