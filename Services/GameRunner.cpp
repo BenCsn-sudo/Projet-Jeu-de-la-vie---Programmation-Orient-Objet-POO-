@@ -52,7 +52,7 @@ void GameRunner::run() {
 // Demande du chemin de l'input
 string GameRunner::askInput() const {
 	string input;
-	cout << "Chemin du fichier d'entrée : " << endl;
+	cout << "Chemin du fichier d'entree : " << endl;
 	cin >> input;
 	return input;
 }
