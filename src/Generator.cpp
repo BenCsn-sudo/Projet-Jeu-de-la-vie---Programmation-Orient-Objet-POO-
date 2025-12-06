@@ -5,8 +5,8 @@
 using namespace std;
 
 int main() {
-    int width = 100;   // Largeur de la grille
-    int height = 100;  // Hauteur de la grille
+    int width = 10;   // Largeur de la grille
+    int height = 10;  // Hauteur de la grille
     int density = 60;   // Pourcentage de cellules vivantes au départ (env. 40%)
 
     cout << "Creation du fichier input.txt (" << width << "x" << height << ")..." << endl;

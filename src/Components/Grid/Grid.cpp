@@ -2,6 +2,7 @@
 #include "../Cell/DeadState.h"
 #include "../Cell/AliveState.h"
 #include <iostream>
+
 /*
 Description du construceur, il initialise les différentes cellules
 indépendemment pour ne pas utiliser les copies et risquer une erreur mémoire
@@ -9,68 +10,78 @@ Il va falloir changer cette partie pour initialiser avec les données du .txt
 */
 Grid::Grid(int w, int h) : width(w), height(h), cells(h, std::vector<Cell>()) {
 
-	for (int row = 0; row < height; ++row) {
-		cells[row].reserve(width);
+    for (int row = 0; row < height; ++row) {
+        cells[row].reserve(width);
 
-		for (int col = 0; col < width; ++col) {
-    			cells[row].emplace_back(new DeadState());
-		}
-	}
+        for (int col = 0; col < width; ++col) {
+            cells[row].emplace_back(new DeadState());
+        }
+    }
 }
 
 //Méthode pour afficher la grille dans la console
 void Grid::print() const {
 
-	for (int row = 0; row < height; ++row) {
+    for (int row = 0; row < height; ++row) {
 
-        	for (int col = 0; col < width; ++col) {
+        for (int col = 0; col < width; ++col) {
 
-            		if (cells[row][col].isAlive()) {
-                		std::cout << "1 ";
-            		} else {
-                		std::cout << "0 ";
-			}
-        	}
-        	std::cout << '\n';
-    	}
+            if (cells[row][col].isAlive()) {
+                std::cout << "1 ";
+            } else {
+                std::cout << "0 ";
+            }
+        }
+        std::cout << '\n';
+    }
 }
 
 //Méthode pour changer l'état d'une cellule en vivante
 void Grid::setAlive(int row, int col) {
-	cells[row][col].setState(new AliveState());
+    cells[row][col].setState(new AliveState());
 }
 
 void Grid::setDead(int row, int col) {
-	cells[row][col].setState(new DeadState());
+    cells[row][col].setState(new DeadState());
+}
+
+// NEW: méthode utilitaire pour basculer l'état d'une cellule (utilisée par l'interface graphique)
+void Grid::toggleCell(int row, int col) {
+    if (cells[row][col].isAlive()) {
+        setDead(row, col);
+    } else {
+        setAlive(row, col);
+    }
 }
 
 
 // Compte le nombre de voisins vivants autour de la cellule (row, col)
+// GRILLE TORIQUE : les bords se rejoignent (comme un donut)
 int Grid::countLivingNeighbours(int row, int col) const {
 
-	int count = 0;
+    int count = 0;
 
-	// Les 8 directions
-	const int directions[8][2] = {
-		{-1, -1}, {-1, 0}, {-1, +1},
-		{ 0, -1},          { 0, +1},
-		{+1, -1}, {+1, 0}, {+1, +1}
-	};
+    // Les 8 directions
+    const int directions[8][2] = {
+        {-1, -1}, {-1, 0}, {-1, +1},
+        { 0, -1},          { 0, +1},
+        {+1, -1}, {+1, 0}, {+1, +1}
+    };
 
-	for (const auto& d : directions) {
-        	int newRow = row + d[0];
-        	int newCol = col + d[1];
+    for (const auto& d : directions) {
+        // Calcul de la position du voisin avec wraparound (modulo)
+        // Si newRow est négatif, on ajoute height pour revenir de l'autre côté
+        // Le modulo % assure que les valeurs restent dans [0, height-1] ou [0, width-1]
+        int newRow = (row + d[0] + height) % height;
+        int newCol = (col + d[1] + width) % width;
 
-        	// Vérification des limites de la grille
-        	if (newRow >= 0 && newRow < height && newCol >= 0 && newCol < width) {
+        // Plus besoin de vérifier les limites car le modulo gère automatiquement
+        if (cells[newRow][newCol].isAlive()) {
+            count++;
+        }
+    }
 
-            		if (cells[newRow][newCol].isAlive()) {
-                		count++;
-            		}
-        	}
-    	}
-
-    	return count;
+    return count;
 }
 
 

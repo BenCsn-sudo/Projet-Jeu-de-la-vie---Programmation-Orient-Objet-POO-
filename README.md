@@ -54,6 +54,28 @@ Chaque cellule a **8 voisins** (horizontal, vertical, diagonal) :
 └─┴─┴─┘
 ```
 
+### 🍩 Bonus : Grille Torique (Toroidal Grid)
+
+Ce projet implemente une **grille torique** : les bords de la grille se rejoignent comme sur un donut (tore) !
+
+**Comportement** :
+- Le bord **haut** est connecte au bord **bas**
+- Le bord **gauche** est connecte au bord **droit**
+- Les cellules aux coins ont maintenant **8 voisins complets**
+
+**Exemple** : Sur une grille 5×5, la cellule en position `(0,0)` (coin superieur gauche) a comme voisins :
+- `(4,4)`, `(4,0)`, `(4,1)` (bord oppose haut)
+- `(0,4)`, `(0,1)` (bord oppose horizontal)
+- `(1,4)`, `(1,0)`, `(1,1)` (voisins normaux)
+
+**Implementation technique** : Utilisation de l'operateur modulo pour le wraparound
+```cpp
+int newRow = (row + deltaRow + height) % height;
+int newCol = (col + deltaCol + width) % width;
+```
+
+**Test** : Fichier `test_torique.txt` - 4 cellules aux coins d'une grille 5×5 forment un pattern stable car elles sont toutes voisines via le wraparound !
+
 ---
 
 ## Installation
@@ -142,7 +164,8 @@ make
 Choisissez le mode d'execution :
   1. Mode Console (sauvegarde iterations dans fichiers)
   2. Mode Graphique (visualisation SFML)
-Votre choix (1 ou 2) :
+  3. Mode Test Unitaire (execute les 8 tests)
+Votre choix (1, 2 ou 3) :
 ```
 
 ---
@@ -226,6 +249,51 @@ Affiche la grille en temps reel avec une interface graphique SFML.
 - **Cellules mortes** : Gris fonce
 - **Texte** : Affiche iteration actuelle et delai
 - **Grille** : Bordures blanches
+
+---
+
+## Mode 3 : Tests Unitaires
+
+### Description
+Execute automatiquement les 8 tests unitaires pour verifier le bon fonctionnement du jeu.
+
+### Utilisation
+
+1. Choisir option **3**
+2. Les tests s'executent automatiquement
+
+### Tests executes
+
+Le mode test verifie :
+- Grille vide reste vide
+- Regle de naissance (3 voisins vivants)
+- Mort par isolement (< 2 voisins)
+- Survie (2-3 voisins)
+- Mort par surpopulation (> 3 voisins)
+- Motif stable "Block" 2x2
+- Comptage correct des voisins
+- Lecture de fichier
+
+### Resultat
+
+```
+========================================
+  Tests Unitaires - Jeu de la Vie
+========================================
+
+[OK] Test 1 : Grille vide reste vide
+[OK] Test 2 : Regle de naissance (3 voisins)
+[OK] Test 3 : Mort par sous-population (<2 voisins)
+[OK] Test 4 : Survie avec 2-3 voisins
+[OK] Test 5 : Mort par surpopulation (>3 voisins)
+[OK] Test 6 : Motif stable 'Block' 2x2
+[OK] Test 7 : Comptage correct de 8 voisins
+[OK] Test 8 : Lecture fichier input.txt
+
+========================================
+  Resultats : 8/8 tests passes
+========================================
+```
 
 ---
 
@@ -383,31 +451,47 @@ g++ -std=c++20 -Wall -Wextra -o test_grid tests/test_grid.cpp Components/Game.cp
 
 ## Exemples
 
-### Motifs classiques
+### Motifs classiques inclus
 
-#### 1. Glider (planeur)
+Le projet contient plusieurs fichiers de test pour experimenter avec des motifs celebres du Jeu de la Vie :
+
+#### 1. 🚀 Glider (planeur) - `test_glider.txt`
+```
+10 10
+0 0 0 0 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 0
+0 0 0 1 0 0 0 0 0 0
+0 1 1 1 0 0 0 0 0 0
+...
+```
+**Comportement** : Motif qui se deplace en diagonale (vers le bas-droite). Periode de 4 generations.
+
+**Test** :
+```bash
+# Mode console - 4 iterations pour voir le deplacement
+echo "1" | .\jeu_de_la_vie.exe
+# Entrer : test_glider.txt et 4
+```
+
+#### 2. ⚡ Blinker (oscillateur periode 2) - `test_blinker.txt`
 ```
 5 5
-0 0 1 0 0
-0 0 0 1 0
-0 1 1 1 0
 0 0 0 0 0
+0 0 1 0 0
+0 0 1 0 0
+0 0 1 0 0
 0 0 0 0 0
 ```
-Motif qui se deplace en diagonale.
+**Comportement** : Oscille entre vertical et horizontal. Periode de 2 generations.
 
-#### 2. Blinker (oscillateur periode 2)
+**Test** :
+```bash
+# Mode console - 3 iterations pour voir l'oscillation complete
+echo "1" | .\jeu_de_la_vie.exe
+# Entrer : test_blinker.txt et 3
 ```
-5 5
-0 0 0 0 0
-0 0 1 0 0
-0 0 1 0 0
-0 0 1 0 0
-0 0 0 0 0
-```
-Oscille entre horizontal et vertical.
 
-#### 3. Block (stable)
+#### 3. 🟩 Block (nature morte) - Inclus dans les tests unitaires
 ```
 4 4
 0 0 0 0
@@ -415,17 +499,44 @@ Oscille entre horizontal et vertical.
 0 1 1 0
 0 0 0 0
 ```
-Ne change jamais.
+**Comportement** : Motif stable qui ne change jamais.
 
-#### 4. Toad (oscillateur periode 2)
+#### 4. 🍩 Grille Torique - `test_torique.txt`
 ```
-6 6
-0 0 0 0 0 0
-0 0 0 0 0 0
-0 0 1 1 1 0
-0 1 1 1 0 0
-0 0 0 0 0 0
-0 0 0 0 0 0
+5 5
+1 0 0 0 1
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 0
+1 0 0 0 1
+```
+**Comportement** : Teste le wraparound (bords qui se rejoignent). Les 4 coins sont voisins !
+
+**Test** :
+```bash
+# Mode console
+echo "1" | .\jeu_de_la_vie.exe
+# Entrer : test_torique.txt et 3
+```
+
+### Experimenter avec les motifs
+
+#### Mode Console
+```bash
+# Windows
+.\jeu_de_la_vie.exe
+# Choisir : 1 (Mode Console)
+# Fichier : test_glider.txt (ou test_blinker.txt)
+# Iterations : 4 (pour bien voir l'evolution)
+```
+
+#### Mode Graphique
+```bash
+# Windows
+.\jeu_de_la_vie.exe
+# Choisir : 2 (Mode Graphique)
+# Les motifs s'animent en temps reel !
+# Controles : Espace (pause), Fleches haut/bas (vitesse)
 ```
 
 ---

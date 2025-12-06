@@ -1,7 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include <vector>	// Pour utiliser les vecteurs
+#include <vector>   // Pour utiliser les vecteurs
 
 #include "../Cell/DeadState.h"
 #include "../Cell/Cell.h"
@@ -22,6 +22,7 @@ private:
 	- gestion automatique de la mémoire
 	*/
 	std::vector<std::vector<Cell>> cells;
+
 public:
 	// Constructeur : initialise la grille avec des cellules mortes
 	// Il va falloir changer cette partie pour initialiser avec les données du .txt
@@ -33,6 +34,9 @@ public:
 	// Setters des états des cellules
 	void setAlive(int row, int col);
 	void setDead(int row, int col);
+
+	// oliv: bascule l'état d'une cellule (utilisé par l'interface graphique pour le clic souris)
+	void toggleCell(int row, int col);
 
 	// Getters largeur et hauteur
 	int getWidth() const { return width; }
@@ -49,10 +53,11 @@ public:
 	*/
 	const Cell& getCell(int row, int col) const { return cells[row][col]; }
 
-	// Compte le nombre de voisins vivants autour de la cellule (row, col)
-	int countLivingNeighbours(int row, int col) const;
-
 	// Beaucoup plus rapide que *this = next c'est pour echanger des données sans tout recopier
 	void swap(Grid& other);
+
+	// Compte le nombre de voisins vivants autour de la cellule (row, col)
+	int countLivingNeighbours(int row, int col) const;
 };
+
 #endif

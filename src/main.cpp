@@ -3,6 +3,8 @@
 #include "Services/IO/FileReader.h"
 #include "Components/Rules/StandardRule.h"
 #include "Ihm/GameWindow.h"
+
+#include "tests/TestRunner.h"
 #include "Components/Updaters/GridUpdater.h"
 #include "Components/Updaters/SingleThreadUpdater.h"
 #include "Components/Updaters/MultiThreadUpdater.h"
@@ -14,9 +16,11 @@ using namespace std;
 int main() {
     cout << "=== Jeu de la Vie - Conway ===\n";
     cout << "Choisissez le mode d'execution :\n";
-    cout << "  1. Mode Console (sauvegarde iterations dans fichiers)\n";
-    cout << "  2. Mode Graphique (visualisation SFML)\n";
-    cout << "Votre choix (1 ou 2) : ";
+    cout << "  1. Mode Console\n";
+    cout << "  2. Mode Graphique\n";
+    cout << "  3. Mode Test Unitaire\n";
+
+    cout << "Votre choix (1, 2 ou 3) : ";
     
     int choix;
     cin >> choix;
@@ -53,6 +57,13 @@ int main() {
         GameWindow window(grid, rule, std::move(windowUpdater), 800, 200);
         window.run();
     }
+
+/*
+    else if (choix == 3) {
+        // Mode test unitaire
+        run_all_tests();
+    }
+*/
     else {
         cerr << "Choix invalide. Veuillez relancer le programme.\n";
         return 1;
