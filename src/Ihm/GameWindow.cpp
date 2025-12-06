@@ -5,8 +5,8 @@
 
 using namespace std;
 
-GameWindow::GameWindow(Grid& g, const Rules& r, int winSize, int delay)
-    : grid(g), rule(r), windowSize(winSize), iterationDelay(delay),
+GameWindow::GameWindow(Grid& g, const Rules& r, std::unique_ptr<GridUpdater> u, int winSize, int delay)
+    : grid(g), rule(r), updater(std::move(u)), windowSize(winSize), iterationDelay(delay),
       window(sf::VideoMode(winSize, winSize), "Jeu de la Vie - SFML")
 {
     // Calcul automatique de la taille d'une cellule
@@ -95,7 +95,7 @@ void GameWindow::run() {
 }
 
 void GameWindow::update() {
-    grid.nextGeneration(rule);
+    updater->update(grid, rule);
     iterationCount++;
 }
 

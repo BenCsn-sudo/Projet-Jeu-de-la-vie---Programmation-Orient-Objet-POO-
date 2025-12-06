@@ -52,7 +52,7 @@ public:
 	// Compte le nombre de voisins vivants autour de la cellule (row, col)
 	int countLivingNeighbours(int row, int col) const;
 
-	// Calcule la prochaine génération de la grille en appliquant les règles
-	void nextGeneration(const Rules& rule);
+	// Beaucoup plus rapide que *this = next c'est pour echanger des données sans tout recopier
+	void swap(Grid& other);
 };
 #endif

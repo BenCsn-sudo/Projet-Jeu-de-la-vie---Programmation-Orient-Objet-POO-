@@ -27,7 +27,7 @@ public:
 	Constructeur initial: on créer une cellule en lui donnant
 	son état initial (prend possession du pointeur).
 	explicit : empêche les conversions implicites depuis un
-	pointeur CellState*, ce qui évit la création accidentelle
+	pointeur CellState*, ce qui évite la création accidentelle
 	d'une Cell et force une intention claire.
 	*/
 	explicit Cell(CellState* state) : state(state) {}

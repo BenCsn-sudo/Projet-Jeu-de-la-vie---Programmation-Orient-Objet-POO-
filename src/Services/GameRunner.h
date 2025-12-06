@@ -16,8 +16,14 @@ private:
 	// Méthode interne : demande le chemin du fichier input
 	std::string askInput() const;
 
+	// Méthode interne : demande la méthode de calcul
+	int askStrat() const;
+
 	// Méthode interne : génère le nom du fichier de sortie pour une itération donnée
 	std::string iterationFilePath(const std::string& folder, int iteration) const;
+
+	// Méthode interne : Chronomètre la simulation et affiche le résultat
+	void benchmarkRun(Game& game, const std::string& folder, int iterations);
 
 public:
 	// Constructeur par defaut

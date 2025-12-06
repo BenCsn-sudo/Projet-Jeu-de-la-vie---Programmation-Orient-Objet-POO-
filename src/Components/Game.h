@@ -1,8 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <memory>
+
 #include "Grid/Grid.h"
 #include "Rules/Rules.h"
+#include "Updaters/GridUpdater.h"
+
 
 /*
 Orchestre du jeu de la vie:
@@ -17,9 +21,12 @@ private:
 	Grid grid;
 	const Rules& rule;
 	int iterations;
+	std::unique_ptr<GridUpdater> updater;
+	std::string updaterName;
+
 public:
 	// Constructeur
-	Game(const Grid& g, const Rules& r, int iter);
+	Game(const Grid& g, const Rules& r, int iter, std::unique_ptr<GridUpdater> u, std::string name);
 
 	// Méthodes interne : applique la prochaine génération
 	void nextStep();
@@ -29,6 +36,8 @@ public:
 
 	// Getter de la grille
 	const Grid& getGrid() const { return grid; }
+
+	std::string getUpdaterName() const { return updaterName; }
 };
 
 #endif

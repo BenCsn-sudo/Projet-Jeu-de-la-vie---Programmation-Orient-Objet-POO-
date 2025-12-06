@@ -1,13 +1,16 @@
 #ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "../Components/Grid/Grid.h"
 #include "../Components/Rules/Rules.h"
+#include "../Components/Updaters/GridUpdater.h"
+
 
 class GameWindow {
 public:
-    GameWindow(Grid& grid, const Rules& rule, int windowSize = 800, int delay = 1000);
+    GameWindow(Grid& grid, const Rules& rule, std::unique_ptr<GridUpdater> updater, int windowSize = 800, int delay = 1000);
 
     void run();
 
@@ -19,7 +22,7 @@ private:
 private:
     Grid& grid;
     const Rules& rule;
-
+    std::unique_ptr<GridUpdater> updater;
     int windowSize;      // d'abord windowSize
     int iterationDelay;  // ensuite iterationDelay
     float cellSize;

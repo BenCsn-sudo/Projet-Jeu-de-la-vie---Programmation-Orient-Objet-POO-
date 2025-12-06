@@ -3,6 +3,11 @@
 #include "Services/IO/FileReader.h"
 #include "Components/Rules/StandardRule.h"
 #include "Ihm/GameWindow.h"
+#include "Components/Updaters/GridUpdater.h"
+#include "Components/Updaters/SingleThreadUpdater.h"
+#include "Components/Updaters/MultiThreadUpdater.h"
+#include <memory>
+
 
 using namespace std;
 
@@ -21,16 +26,31 @@ int main() {
         // Mode console : utilise GameRunner
         GameRunner runner;
         runner.run();
-    } 
+    }
     else if (choix == 2) {
         // Mode graphique : SFML
-        string inputFile = "input.txt";  // Fichier d'entrée par défaut
+        string inputFile = "input.txt";
         
         FileReader reader;
         Grid grid = reader.read(inputFile);
         
         StandardRule rule;
-        GameWindow window(grid, rule, 800, 200);
+        
+        // --- NOUVEAU BLOC DE CHOIX ---
+        cout << "Mode de calcul : Mono-thread (1) / Multi-thread (2)" << endl;
+        int strat;
+        cin >> strat;
+
+        std::unique_ptr<GridUpdater> windowUpdater;
+        if (strat == 2) {
+            windowUpdater = make_unique<MultiThreadUpdater>();
+        } else {
+            windowUpdater = make_unique<SingleThreadUpdater>();
+        }
+        // --- FIN NOUVEAU BLOC ---
+        
+        // NOUVEL APPEL AU CONSTRUCTEUR
+        GameWindow window(grid, rule, std::move(windowUpdater), 800, 200);
         window.run();
     }
     else {

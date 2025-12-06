@@ -26,6 +26,9 @@ $(BIN): $(OBJ)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) $(BIN)
+	rm -f $(OBJ) $(BIN) input.txt generateur
+	rm -rf *_out
+	rm -f input.txt_outfinal_grid.txt
+
 
 .PHONY: all clean

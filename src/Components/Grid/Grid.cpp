@@ -17,6 +17,7 @@ Grid::Grid(int w, int h) : width(w), height(h), cells(h, std::vector<Cell>()) {
 		}
 	}
 }
+
 //Méthode pour afficher la grille dans la console
 void Grid::print() const {
 
@@ -72,30 +73,10 @@ int Grid::countLivingNeighbours(int row, int col) const {
     	return count;
 }
 
-// Calcule la prochaine génération de la grille en appliquant les règles
-void Grid::nextGeneration(const Rules& rule) {
 
-	// Grille tampon : même taille, toutes mortes au départ
-	Grid next(width, height);
-
-    	for (int row = 0; row < height; ++row) {
-
-        	for (int col = 0; col < width; ++col) {
-
-            		bool aliveNow = cells[row][col].isAlive();
-            		int neighbours = countLivingNeighbours(row, col);
-
-            		// La règle décide si la cellule sera vivante à t+1
-            		bool aliveNext = rule.willBeAlive(aliveNow, neighbours);
-
-            		if (aliveNext) {
-                		next.setAlive(row, col);
-            		} else {
-                		next.setDead(row, col);
-			}
-        	}
-    	}
-
-    	// Remplacer l'ancienne grille par la nouvelle
-    	*this = next;
+void Grid::swap(Grid& other) {
+	// Echange efficace des données sans tout recopier
+	std::swap(width, other.width);
+	std::swap(height, other.height);
+	std::swap(cells, other.cells);
 }
