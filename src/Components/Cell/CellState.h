@@ -25,6 +25,10 @@ public:
 	état et qu'ils ne soient jamais partagé
 	*/
 	virtual std::unique_ptr<CellState> clone() const = 0;
+
+//Modif Coco, on fait comme is Alive mais pour les obstacles
+	virtual bool isObstacle() const {return false;}
+
 };
 
 #endif

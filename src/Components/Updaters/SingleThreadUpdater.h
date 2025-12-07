@@ -25,7 +25,11 @@ public:
 	// Les deux boucles imbriquées parcourent chaque cellule de la grille de manière ordonnée.
 	for (int y = 0; y < grid.getHeight(); ++y) {
 		for (int x = 0; x < grid.getWidth(); ++x) {
-
+			//Modif Coco, Si c'est un obstacle on le recopie sans appliquer les règles
+			if (grid.getCell(y,x).isObstacle()){
+				next.setObstacle(y,x);
+				continue;
+			}
 			// Logique standard : on lit l'état actuel de la cellule et de ses voisins.
 			bool aliveNow = grid.getCell(y, x).isAlive();
 			int neighbours = grid.countLivingNeighbours(y, x);

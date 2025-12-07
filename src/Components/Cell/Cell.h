@@ -57,7 +57,11 @@ public:
 	//Vérifie si la cellule est vivante en déléguant au state
 	bool isAlive() const {
         	return state->isAlive();
-    }
+	}
+	//Modif Coco, pour déterminer si c'est un obstacle:
+	bool isObstacle() const{
+	return state->isObstacle(); //true ou false en fonction de la case
+	}
 	//Méthode pour changer l'état de la cellule
 	void setState(CellState* newState) {
     		state.reset(newState);

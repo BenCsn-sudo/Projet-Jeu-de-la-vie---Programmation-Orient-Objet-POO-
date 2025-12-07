@@ -24,8 +24,20 @@ void FileWriter::write(const Grid& grid, const string& path) const {
 	// Parcourt et écrit chaque cellule
 	for (int h = 0; h < grid.getHeight(); ++h) {
 		for (int w = 0; w < grid.getWidth(); ++w) {
-			// 1 si vivante et 0 si morte
-			out << (grid.getCell(h, w).isAlive() ? 1 : 0) << " ";
+//Modif Coco, ben j'ai changé ton système ultra compact, j'ai fais comme un switch mais avec des ifs
+//Donc ça fait la même mais avec plus que juste isAlive j'ajoute isObstacle
+
+			const Cell& c = grid.getCell(h,w);
+			int val =0;
+			if (c.isObstacle()){
+				val=2;
+			}else if(c.isAlive()){
+				val=1;
+			}else{
+				val=0;
+			}
+			out << val << " ";
+
 		}
 		out << "\n";
 	}

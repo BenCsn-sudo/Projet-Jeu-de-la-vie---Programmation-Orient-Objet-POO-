@@ -37,9 +37,11 @@ Grid FileReader::read(const string& path) const {
 		for (int w = 0; w < width; ++w) {
 			int val;
 			file >> val;
-
+//Modif coco, nouvelle possibilité : si c'est un 2 cest un obstacle
+			if (val==2){
+				grid.setObstacle(h,w);
 			// 1 = Cellule vivante
-			if (val == 1) {
+			}else if (val == 1) {
 				grid.setAlive(h, w);
 
 			// 0 = Cellule morte

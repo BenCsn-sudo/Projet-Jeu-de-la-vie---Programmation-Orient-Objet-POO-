@@ -1,6 +1,7 @@
 #include "Grid.h"
 #include "../Cell/DeadState.h"
 #include "../Cell/AliveState.h"
+#include "../Cell/ObstacleState.h"
 #include <iostream>
 
 /*
@@ -25,8 +26,9 @@ void Grid::print() const {
     for (int row = 0; row < height; ++row) {
 
         for (int col = 0; col < width; ++col) {
-
-            if (cells[row][col].isAlive()) {
+	    if(cells[row][col].isObstacle()){
+	        std::cout <<"2 ";
+            }else if (cells[row][col].isAlive()) {
                 std::cout << "1 ";
             } else {
                 std::cout << "0 ";
@@ -90,4 +92,12 @@ void Grid::swap(Grid& other) {
 	std::swap(width, other.width);
 	std::swap(height, other.height);
 	std::swap(cells, other.cells);
+}
+
+
+//Modif coco, on définit la méthode pour ajouter et garder les obstacles:
+void Grid::setObstacle(int row, int col){
+	if (row>= 0 && row<height && col>=0 && col < width){
+		cells[row][col].setState(new ObstacleState());
+	}
 }

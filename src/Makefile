@@ -1,46 +1,52 @@
+# --- Makefile ---
+
+# Compilateur et options
 CXX = g++
+CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2
 
-# Chemin racine de SFML (on enlève juste le \bin à la fin)
-SFML_DIR = C:/Users/Olivier/Documents/Jeu de la vie GRP1/Projet-Jeu-de-la-vie---Programmation-Orient-Objet-POO--main/Projet-Jeu-de-la-vie---Programmation-Orient-Objet-POO--main/SFML-2.6.2-windows-gcc-13.1.0-mingw-64-bit/SFML-2.6.2
+# --- CHEMINS VERS LA LIBRAIRIE LOCALE (IMPORTANT) ---
+# On pointe vers le dossier lib qu'on vient de créer
+SFML_PATH = ../lib/linux
+INCLUDES = -IComponents -IServices -IIhm -I$(SFML_PATH)/include
+LIBS_DIR = -L$(SFML_PATH)/lib
 
-# Dossiers d'include
-INC_DIRS = -IComponents -IServices -IIhm -I"$(SFML_DIR)/include"
+# Options de l'éditeur de liens (Linker)
+# -Wl,-rpath... permet à l'exécutable de trouver les .so sans définir LD_LIBRARY_PATH à chaque fois
+LDFLAGS = $(LIBS_DIR) -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath,'$$ORIGIN/../lib/linux/lib'
 
-CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2 $(INC_DIRS)
+# Fichiers sources (Automatique)
+SRCS = main.cpp \
+       Components/Game.cpp \
+       Components/Cell/AliveState.cpp \
+       Components/Cell/DeadState.cpp \
+       Components/Grid/Grid.cpp \
+       Components/Rules/StandardRule.cpp \
+       Components/Updaters/MultiThreadUpdater.cpp \
+       Services/GameRunner.cpp \
+       Services/IO/FileName.cpp \
+       Services/IO/FileReader.cpp \
+       Services/IO/FileWriter.cpp \
+       Services/IO/FolderManager.cpp \
+       Services/WorkerPool/WorkerPool.cpp \
+       Ihm/GameWindow.cpp
 
-# Dossiers de libs
-LIB_DIRS = -L"$(SFML_DIR)/lib"
-
-# Libs SFML à l’édition de liens
-LDFLAGS = $(LIB_DIRS) -lsfml-graphics -lsfml-window -lsfml-system
-
-# Tous les fichiers sources
-SRC := $(wildcard main.cpp) \
-       $(wildcard Components/*.cpp) \
-       $(wildcard Components/*/*.cpp) \
-       $(wildcard Services/*.cpp) \
-       $(wildcard Services/*/*.cpp) \
-       $(wildcard Ihm/*.cpp) \
-       $(wildcard Ihm/*/*.cpp)
-
-# Transformation en .o
-OBJ = $(SRC:.cpp=.o)
+# Fichiers objets
+OBJS = $(SRCS:.cpp=.o)
 
 # Nom de l'exécutable
-BIN = jeu_de_la_vie
+TARGET = main
 
-all: $(BIN)
+# Règle par défaut
+all: $(TARGET)
 
-$(BIN): $(OBJ)
-	$(CXX) $(OBJ) -o $(BIN) $(LDFLAGS)
+# Édition de liens
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
+# Compilation des .cpp en .o
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
+# Nettoyage
 clean:
-	rm -f $(OBJ) $(BIN) input.txt generateur
-	rm -rf *_out
-	rm -f input.txt_outfinal_grid.txt
-
-
-.PHONY: all clean
+	rm -f $(OBJS) $(TARGET)

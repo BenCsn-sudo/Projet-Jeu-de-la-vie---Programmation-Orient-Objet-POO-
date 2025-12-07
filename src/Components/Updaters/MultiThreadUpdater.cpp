@@ -69,7 +69,11 @@ void MultiThreadUpdater::update(Grid& grid, const Rules& rule) {
 	        // Boucle de calcul sur la tranche attribuée au thread
 	        for (int y = startY; y < endY; ++y) {
 			for (int x = 0; x < grid.getWidth(); ++x) {
-
+				//Modif coco, gestion des obstacles
+				if (grid.getCell(y,x).isObstacle()){
+					tempGrid->setObstacle(y,x);
+					continue;
+				}
 				// Lecture de l'état (TOUJOURS sur la grille source 'grid')
 				bool aliveNow = grid.getCell(y, x).isAlive();
 				int neighbours = grid.countLivingNeighbours(y, x);

@@ -6,7 +6,7 @@
 #include "../Cell/DeadState.h"
 #include "../Cell/Cell.h"
 #include "../Rules/Rules.h"
-
+#include "../Cell/ObstacleState.h"
 class Grid {
 private:
 	int width;
@@ -34,7 +34,9 @@ public:
 	// Setters des états des cellules
 	void setAlive(int row, int col);
 	void setDead(int row, int col);
-
+	//Modif coco : 
+	void setObstacle(int row, int col);
+	
 	// oliv: bascule l'état d'une cellule (utilisé par l'interface graphique pour le clic souris)
 	void toggleCell(int row, int col);
 

@@ -190,8 +190,9 @@ void GameWindow::drawGrid() {
     // Dessin des cellules
     for (int r = 0; r < rows; ++r) {
         for (int c = 0; c < cols; ++c) {
-
-            if (grid.getCell(r, c).isAlive())
+	    if (grid.getCell(r,c).isObstacle()){
+		cellShape.setFillColor(sf::Color(200,0,0));
+            }else if (grid.getCell(r, c).isAlive())
                 cellShape.setFillColor(sf::Color::White);
             else
                 cellShape.setFillColor(sf::Color(30, 30, 30)); // gris fonce
