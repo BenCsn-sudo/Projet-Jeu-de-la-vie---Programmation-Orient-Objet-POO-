@@ -243,7 +243,7 @@ void GameWindow::drawInfo() {
         "\nR-Click: place pattern" +
         "\nG/B/L/N: select pattern" +
         "\nC: place pattern center"
-	"\nD: clear grid"
+	    "\nDel: clear grid"
     );
 
     window.draw(text);
