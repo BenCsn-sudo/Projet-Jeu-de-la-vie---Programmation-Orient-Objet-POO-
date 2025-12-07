@@ -59,7 +59,7 @@ int main() {
         }
 
         // NOUVEL APPEL AU CONSTRUCTEUR
-        GameWindow window(grid, rule, std::move(windowUpdater), 800, 200);
+        GameWindow window(grid, rule, std::move(windowUpdater), 800, 1000);
         window.run();
     }
 

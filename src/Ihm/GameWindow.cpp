@@ -83,7 +83,7 @@ void GameWindow::run() {
                 // barre espace -> pause / reprise
                 //       on considère que delay = 1000000 <=> pause
                 if (key == sf::Keyboard::Space)
-                    iterationDelay = (iterationDelay == 1000000) ? 200 : 1000000;
+                    iterationDelay = (iterationDelay == 1000000) ? 1000 : 1000000;
 
                 // motifs pré-programmés avec des lettres (plus fiables que 0/1/2/3 sur AZERTY)
 
