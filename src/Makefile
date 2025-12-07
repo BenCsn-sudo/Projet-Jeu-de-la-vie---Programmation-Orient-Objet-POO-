@@ -34,7 +34,7 @@ SRCS = main.cpp \
 OBJS = $(SRCS:.cpp=.o)
 
 # Nom de l'exécutable
-TARGET = main
+TARGET = jeu_de_la_vie
 
 # Règle par défaut
 all: $(TARGET)
@@ -50,3 +50,6 @@ $(TARGET): $(OBJS)
 # Nettoyage
 clean:
 	rm -f $(OBJS) $(TARGET)
+	rm -rf input_obstacles.txt_out
+	rm -rf jeu_de_la_vie
+	rm -f input_obstacles.txt_outfinal_grid.txt

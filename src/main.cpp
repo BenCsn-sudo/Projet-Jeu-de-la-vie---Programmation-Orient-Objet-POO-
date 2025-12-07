@@ -32,8 +32,14 @@ int main() {
         runner.run();
     }
     else if (choix == 2) {
+
+	string choix;
+	cout << "Chemin du fichier d'entrer : " << endl;
+	cin >> choix;
+	cout << "\n";
+
         // Mode graphique : SFML
-        string inputFile = "input_merci.txt";
+        string inputFile = choix;
 
         FileReader reader;
         Grid grid = reader.read(inputFile);
