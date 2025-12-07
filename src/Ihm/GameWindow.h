@@ -42,6 +42,10 @@ private:
     bool isPaused() const { return iterationDelay == 1000000; }	// petit helper pour savoir si on est en pause
     float cellSize;
     int iterationCount = 0;
+    // Dragclick fonctionnel on initialise à false pour pas avoir de problemes mdrr c logique
+    bool isDragging = false;
+    // efface toute la grille (toutes les cellules deviennent mortes)
+    void clearGrid();
 
     sf::RenderWindow window;
     sf::RectangleShape cellShape;

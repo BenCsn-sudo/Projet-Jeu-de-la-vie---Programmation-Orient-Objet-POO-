@@ -4,6 +4,7 @@
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -O2
 
+
 # --- CHEMINS VERS LA LIBRAIRIE LOCALE (IMPORTANT) ---
 # On pointe vers le dossier lib qu'on vient de créer
 SFML_PATH = ../lib/linux
@@ -13,6 +14,7 @@ LIBS_DIR = -L$(SFML_PATH)/lib
 # Options de l'éditeur de liens (Linker)
 # -Wl,-rpath... permet à l'exécutable de trouver les .so sans définir LD_LIBRARY_PATH à chaque fois
 LDFLAGS = $(LIBS_DIR) -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath,'$$ORIGIN/../lib/linux/lib'
+
 
 # Fichiers sources (Automatique)
 SRCS = main.cpp \
@@ -53,3 +55,8 @@ clean:
 	rm -rf input_obstacles.txt_out
 	rm -rf jeu_de_la_vie
 	rm -f input_obstacles.txt_outfinal_grid.txt
+
+
+
+.PHONY: all clean
+
