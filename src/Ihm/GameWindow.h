@@ -42,6 +42,8 @@ private:
     bool isPaused() const { return iterationDelay == 1000000; }	// petit helper pour savoir si on est en pause
     float cellSize;
     int iterationCount = 0;
+    // Oliv : Dragclick fonctionnel on initialise à false pour pas avoir de problemes mdrr c logique
+    bool isDragging = false;
 
     sf::RenderWindow window;
     sf::RectangleShape cellShape;
