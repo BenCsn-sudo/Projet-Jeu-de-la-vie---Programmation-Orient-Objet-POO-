@@ -1,8 +1,5 @@
 CXX = g++
 
-# Chemin racine de SFML (on enlève juste le \bin à la fin)
-SFML_DIR = C:/Users/Olivier/Documents/Jeu de la vie GRP1/Projet-Jeu-de-la-vie---Programmation-Orient-Objet-POO--main/Projet-Jeu-de-la-vie---Programmation-Orient-Objet-POO--main/SFML-2.6.2-windows-gcc-13.1.0-mingw-64-bit/SFML-2.6.2
-
 # Dossiers d'include
 INC_DIRS = -IComponents -IServices -IIhm -I"$(SFML_DIR)/include"
 
@@ -38,7 +35,7 @@ $(BIN): $(OBJ)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) $(BIN) input.txt generateur
+	rm -f $(OBJ) $(BIN)
 	rm -rf *_out
 	rm -f input.txt_outfinal_grid.txt
 
