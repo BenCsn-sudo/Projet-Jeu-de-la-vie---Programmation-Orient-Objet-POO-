@@ -117,6 +117,11 @@ void GameWindow::run() {
                     placePattern(currentPattern, centerRow, centerCol);
                     std::cout << "Motif place au centre" << std::endl;
                 }
+                // oliv: touche Del -> effacer toute la grille (uniquement en pause)
+                if (key == sf::Keyboard::Delete && isPaused()) {
+                    clearGrid();
+                    std::cout << "Grille effacee (Del)" << std::endl;
+                }
             }
 
             // ======================================
@@ -203,6 +208,18 @@ void GameWindow::run() {
         window.display();
     }
 }
+// oliv: met toutes les cellules de la grille à l'état mort
+void GameWindow::clearGrid() {
+    int rows = grid.getHeight();
+    int cols = grid.getWidth();
+
+    for (int r = 0; r < rows; ++r) {
+        for (int c = 0; c < cols; ++c) {
+            grid.setDead(r, c);
+        }
+    }
+}
+
 
 
 void GameWindow::update() {
@@ -228,6 +245,8 @@ void GameWindow::drawInfo() {
         "\nR-Click: place pattern" +
         "\nG/B/L/N: select pattern" +
         "\nC: place pattern center"
+        "\nDel: clear grid (pause only)  (oliv)"
+
     );
 
     window.draw(text);

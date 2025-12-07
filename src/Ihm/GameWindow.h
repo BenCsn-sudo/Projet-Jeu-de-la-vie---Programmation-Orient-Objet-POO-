@@ -44,6 +44,8 @@ private:
     int iterationCount = 0;
     // Oliv : Dragclick fonctionnel on initialise à false pour pas avoir de problemes mdrr c logique
     bool isDragging = false;
+    // oliv: efface toute la grille (toutes les cellules deviennent mortes)
+    void clearGrid();
 
     sf::RenderWindow window;
     sf::RectangleShape cellShape;
