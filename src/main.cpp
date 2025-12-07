@@ -4,7 +4,7 @@
 #include "Components/Rules/StandardRule.h"
 #include "Ihm/GameWindow.h"
 
-#include "tests/TestRunner.h"
+#include "tests/test_grid.cpp"
 #include "Components/Updaters/GridUpdater.h"
 #include "Components/Updaters/SingleThreadUpdater.h"
 #include "Components/Updaters/MultiThreadUpdater.h"
@@ -21,11 +21,11 @@ int main() {
     cout << "  3. Mode Test Unitaire\n";
 
     cout << "Votre choix (1, 2 ou 3) : ";
-    
+
     int choix;
     cin >> choix;
     cout << "\n";
-    
+
     if (choix == 1) {
         // Mode console : utilise GameRunner
         GameRunner runner;
@@ -33,14 +33,14 @@ int main() {
     }
     else if (choix == 2) {
         // Mode graphique : SFML
-        string inputFile = "input.txt";
-        
+        string inputFile = "input_merci.txt";
+
         FileReader reader;
         Grid grid = reader.read(inputFile);
-        
+
         StandardRule rule;
-        
-        // --- NOUVEAU BLOC DE CHOIX ---
+
+ 	// Mode de calcul
         cout << "Mode de calcul : Mono-thread (1) / Multi-thread (2)" << endl;
         int strat;
         cin >> strat;
@@ -51,19 +51,17 @@ int main() {
         } else {
             windowUpdater = make_unique<SingleThreadUpdater>();
         }
-        // --- FIN NOUVEAU BLOC ---
-        
+
         // NOUVEL APPEL AU CONSTRUCTEUR
         GameWindow window(grid, rule, std::move(windowUpdater), 800, 200);
         window.run();
     }
 
-/*
     else if (choix == 3) {
         // Mode test unitaire
         run_all_tests();
     }
-*/
+
     else {
         cerr << "Choix invalide. Veuillez relancer le programme.\n";
         return 1;
