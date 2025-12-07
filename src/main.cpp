@@ -33,7 +33,7 @@ int main() {
     }
     else if (choix == 2) {
         // Mode graphique : SFML
-        string inputFile = "input_merci.txt";
+        string inputFile = "input.txt";
 
         FileReader reader;
         Grid grid = reader.read(inputFile);
