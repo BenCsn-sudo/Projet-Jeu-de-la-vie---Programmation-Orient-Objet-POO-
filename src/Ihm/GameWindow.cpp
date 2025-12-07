@@ -60,52 +60,57 @@ GameWindow::GameWindow(Grid& g, const Rules& r, std::unique_ptr<GridUpdater> u, 
 void GameWindow::run() {
     while (window.isOpen()) {
 
-        // Gestion evenements clavier/fenetre
         sf::Event event;
         while (window.pollEvent(event)) {
+
+            // oliv: gestion de la fermeture de la fenêtre SFML (croix en haut à droite)
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // NEW: gestion des touches clavier (flèches, espace, et lettres G/B/L/N/C)
+            // ============================
+            // oliv: GESTION DU CLAVIER
+            // ============================
             if (event.type == sf::Event::KeyPressed) {
                 sf::Keyboard::Key key = event.key.code;
 
-                // accélérer
+                // oliv: flèche haut -> on réduit le délai => la simulation va plus vite
                 if (key == sf::Keyboard::Up && iterationDelay > 20)
                     iterationDelay -= 20;
 
-                // ralentir
+                // oliv: flèche bas -> on augmente le délai => la simulation va plus lentement
                 if (key == sf::Keyboard::Down)
                     iterationDelay += 20;
 
-                // pause / reprise
+                // oliv: barre espace -> pause / reprise
+                //       on considère que delay = 1000000 <=> pause
                 if (key == sf::Keyboard::Space)
                     iterationDelay = (iterationDelay == 1000000) ? 200 : 1000000;
 
-                // oliv : motifs pré-programmés avec des lettres (plus fiables que 0/1/2/3 sur AZERTY)
+                // oliv: motifs pré-programmés avec des lettres (plus fiables que 0/1/2/3 sur AZERTY)
 
-                // oliv: G -> Glider
+                // oliv: G -> motif Glider sélectionné
                 if (key == sf::Keyboard::G) {
                     currentPattern = PatternType::Glider;
                     std::cout << "Motif selectionne : Glider (G)" << std::endl;
                 }
-                // oliv: B -> Blinker
+                // oliv: B -> motif Blinker sélectionné
                 else if (key == sf::Keyboard::B) {
                     currentPattern = PatternType::Blinker;
                     std::cout << "Motif selectionne : Blinker (B)" << std::endl;
                 }
-                // oliv: L -> Block
+                // oliv: L -> motif Block sélectionné
                 else if (key == sf::Keyboard::L) {
                     currentPattern = PatternType::Block;
                     std::cout << "Motif selectionne : Block (L)" << std::endl;
                 }
-                // oliv: N -> aucun motif
+                // oliv: N -> aucun motif (désactivation)
                 else if (key == sf::Keyboard::N) {
                     currentPattern = PatternType::None;
                     std::cout << "Motif selectionne : aucun (N)" << std::endl;
                 }
 
-                // oliv: C -> poser le motif sélectionné au centre de la grille
+                // oliv: C -> placer le motif sélectionné au centre de la grille
+                //        uniquement quand le jeu est en pause (édition protégée)
                 if (key == sf::Keyboard::C && currentPattern != PatternType::None && isPaused()) {
                     int centerRow = grid.getHeight() / 2;
                     int centerCol = grid.getWidth() / 2;
@@ -114,7 +119,10 @@ void GameWindow::run() {
                 }
             }
 
-            // oliv : gestion des clics souris pour éditer la grille, et gérer l'évènement pause
+            // ======================================
+            // oliv: SOURIS - CLIC (début du drag)
+            // ======================================
+            // oliv: on n'autorise l'édition de la grille à la souris QUE quand le jeu est en pause
             if (event.type == sf::Event::MouseButtonPressed && isPaused()) {
                 int mouseX = event.mouseButton.x;
                 int mouseY = event.mouseButton.y;
@@ -122,7 +130,7 @@ void GameWindow::run() {
                 int rows = grid.getHeight();
                 int cols = grid.getWidth();
 
-                // oliv: on vérifie que le clic se situe dans la zone de la grille
+                // oliv: on vérifie que le clic est à l'intérieur de la zone de la grille
                 if (mouseX >= 0 && mouseX < static_cast<int>(cols * cellSize) &&
                     mouseY >= 0 && mouseY < static_cast<int>(rows * cellSize)) {
 
@@ -130,30 +138,72 @@ void GameWindow::run() {
                     int row = static_cast<int>(mouseY / cellSize);
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        // oliv: clic gauche -> on bascule l'état alive -> dead ou dead-> alive de la cellule
+                        // oliv: clic gauche -> on TOGGLE l'état de la cellule (vivante <-> morte)
+                        //       => le clic simple continue de marcher comme avant
                         grid.toggleCell(row, col);
+
+                        // oliv: on active le "mode drag"
+                        //       tant que le bouton reste enfoncé, on va pouvoir dessiner
+                        isDragging = true;
                     }
                     else if (event.mouseButton.button == sf::Mouse::Right) {
-                        // oliv: clic droit -> on pose le motif sélectionné centré sur la cellule
+                        // oliv: clic droit -> on pose le motif pré-sélectionné autour de cette cellule
                         placePattern(currentPattern, row, col);
                     }
                 }
             }
+
+            // ======================================
+            // oliv: SOURIS - RELÂCHEMENT (fin du drag)
+            // ======================================
+            if (event.type == sf::Event::MouseButtonReleased) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    // oliv: on arrête le mode drag dès qu'on relâche le bouton gauche
+                    isDragging = false;
+                }
+            }
+
+            // ======================================
+            // oliv: SOURIS - MOUVEMENT (drag dessin)
+            // ======================================
+            // oliv: si le bouton gauche est en drag ET que le jeu est en pause,
+            //       chaque mouvement de souris "peint" des cellules vivantes
+            if (event.type == sf::Event::MouseMoved && isDragging && isPaused()) {
+                int mouseX = event.mouseMove.x;
+                int mouseY = event.mouseMove.y;
+
+                int rows = grid.getHeight();
+                int cols = grid.getWidth();
+
+                // oliv: même vérification que pour le clic: on reste dans les bornes de la grille
+                if (mouseX >= 0 && mouseX < static_cast<int>(cols * cellSize) &&
+                    mouseY >= 0 && mouseY < static_cast<int>(rows * cellSize)) {
+
+                    int col = static_cast<int>(mouseX / cellSize);
+                    int row = static_cast<int>(mouseY / cellSize);
+
+                    // oliv: "pinceau" -> on force la cellule en vivante
+                    //       (drag = dessiner des vivantes sur le chemin)
+                    grid.setAlive(row, col);
+                }
+            }
         }
 
-        // Avance d'une generation toutes les X ms
+        // oliv: avance d'une génération toutes les X ms
+        //       si le delay est énorme (pause), cette condition est rarement vraie
         if (clock.getElapsedTime().asMilliseconds() >= iterationDelay) {
             update();
             clock.restart();
         }
 
-        // Dessin
+        // oliv: phase d'affichage SFML (fond -> grille -> texte)
         window.clear(sf::Color::Black);
         drawGrid();
         drawInfo();
         window.display();
     }
 }
+
 
 void GameWindow::update() {
     updater->update(grid, rule);
