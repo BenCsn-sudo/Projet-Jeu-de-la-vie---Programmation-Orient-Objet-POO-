@@ -1,73 +1,76 @@
 @startuml
-title Diagramme de Sequence - Jeu de la Vie
+title Diagramme de Séquence - Mode Console
 
 actor Utilisateur
-participant "main" as Main
+participant "GameRunner" as Runner
 participant "FileReader" as Reader
-participant "Grid" as Grid
 participant "Game" as Game
+participant "GridUpdater" as Updater
+participant "Grid" as Grid
 participant "StandardRule" as Rule
+participant "FileWriter" as Writer
 
-Utilisateur -> Main : Lance programme
-activate Main
+Utilisateur -> Runner : run()
+activate Runner
 
-Main -> Reader : read("input.txt")
+Runner -> Reader : read("input.txt")
 activate Reader
-
-Reader -> Reader : Lit fichier\n(dimensions + matrice)
-
-Reader -> Grid : new Grid(width, height)
-activate Grid
-
-loop Pour chaque cellule
-  Reader -> Grid : setAlive(row, col) ou setDead(row, col)
-end
-
-Reader --> Main : Retourne grille
+Reader --> Runner : Grid initiale
 deactivate Reader
 
-Main -> Rule : new StandardRule()
-activate Rule
+Runner -> Runner : Choix Stratégie (Mono/Multi)
+create Updater
+Runner -> Updater : new Single/MultiThreadUpdater()
 
-Main -> Game : new Game(grid, rule, iterations)
-activate Game
+create Game
+Runner -> Game : new Game(grid, rule, updater)
 
-loop Pour N iterations
-  
-  Main -> Game : nextStep()
-  
-  Game -> Grid : nextGeneration(rule)
-  
-  loop Pour chaque cellule
-    Grid -> Grid : countLivingNeighbours(row, col)
-    Grid --> Grid : nb_voisins
+Runner -> Runner : benchmarkRun()
+activate Runner
+
+loop Pour chaque itération
+
+    Runner -> Game : nextStep()
+    activate Game
     
-    Grid -> Rule : willBeAlive(etat_actuel, nb_voisins)
+    Game -> Updater : update(grid, rule)
+    activate Updater
     
-    alt Cellule morte + 3 voisins
-      Rule --> Grid : true (naissance)
-    else Cellule vivante + 2-3 voisins
-      Rule --> Grid : true (survie)
-    else Autres cas
-      Rule --> Grid : false (mort)
+    Updater -> Updater : Prépare grille tampon
+    
+    loop Pour chaque cellule (x,y)
+        Updater -> Grid : countLivingNeighbours(x,y)
+        activate Grid
+        Grid --> Updater : nb_voisins
+        deactivate Grid
+        
+        Updater -> Rule : willBeAlive(etat, nb_voisins)
+        activate Rule
+        Rule --> Updater : vivant/mort
+        deactivate Rule
+        
+        Updater -> Updater : Ecrit dans tampon
     end
     
-    Grid -> Grid : Met a jour cellule
-  end
-  
-  Grid --> Game : Nouvelle generation
-  
-  Game -> Game : Sauvegarde etat dans fichier
-  
+    Updater -> Grid : swap(tampon)
+    activate Grid
+    Grid --> Updater : Grille mise à jour
+    deactivate Grid
+    
+    Updater --> Game : Fin mise à jour
+    deactivate Updater
+    
+    Game --> Runner : Etape terminée
+    deactivate Game
+    
+    Runner -> Writer : write(grid, "out_N.txt")
+    activate Writer
+    Writer --> Runner : Fichier écrit
+    deactivate Writer
+
 end
 
-Game --> Main : Simulation terminee
-
-Main --> Utilisateur : Affiche resultats
-
-deactivate Game
-deactivate Rule
-deactivate Grid
-deactivate Main
+deactivate Runner
+deactivate Runner
 
 @enduml

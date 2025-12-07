@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Technique - Jeu de la Vie</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fdfdfd;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 50px;
+            border-left: 5px solid #2980b9;
+            padding-left: 15px;
+            background-color: #ecf0f1;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #7f8c8d;
+            margin-top: 30px;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        p {
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+        .diagram-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .diagram-box img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .diagram-note {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        .explanation-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 0.95em;
+            border-radius: 0 4px 4px 0;
+        }
+        .code-concept {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-family: 'Consolas', monospace;
+            color: #e83e8c;
+        }
+        ul {
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tech-badge {
+            background-color: #34495e;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #95a5a6;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Documentation Technique</h1>
+    <p style="text-align: center; font-size: 1.2em; color: #7f8c8d;">
+        Projet C++ POO : Simulation du Jeu de la Vie de Conway
+    </p>
+
+    <h2>1. Introduction</h2>
+    <p>
+        Ce document détaille la conception technique et l'architecture logicielle du projet "Jeu de la Vie". 
+        L'objectif de ce projet était de développer une simulation performante et modulaire de l'automate cellulaire de John Conway, en appliquant rigoureusement les principes de la <strong>Programmation Orientée Objet (POO)</strong>.
+    </p>
+    <p>
+        Au-delà de la simple implémentation des règles du jeu, nous avons mis l'accent sur la qualité du code, l'extensibilité et l'optimisation. Le projet propose plusieurs modes d'exécution (Console, Graphique, Tests) et intègre des concepts avancés comme le multi-threading et les design patterns.
+    </p>
+
+    <h2>2. Stack Technique</h2>
+    <div class="tech-stack">
+        <span class="tech-badge">C++ 20</span>
+        <span class="tech-badge">SFML 2.6</span>
+        <span class="tech-badge">CMake / Makefile</span>
+        <span class="tech-badge">PlantUML</span>
+        <span class="tech-badge">Git</span>
+    </div>
+    <p>
+        Le choix du <strong>C++20</strong> nous a permis d'utiliser des fonctionnalités modernes telles que les pointeurs intelligents (<code>std::unique_ptr</code>) pour une gestion sûre de la mémoire, et la bibliothèque standard de threads pour la parallélisation. 
+        <strong>SFML</strong> a été retenue pour l'interface graphique en raison de sa légèreté et de sa facilité d'intégration avec le C++ standard.
+    </p>
+
+    <h2>3. Architecture et Conception (SOLID)</h2>
+    <p>
+        L'architecture du projet respecte les principes <strong>SOLID</strong> pour garantir un code maintenable et évolutif.
+    </p>
+
+    <h3>3.1 Principes Appliqués</h3>
+    <ul>
+        <li><strong>Single Responsibility Principle (SRP) :</strong> Chaque classe a une responsabilité unique. Par exemple, <code>Grid</code> gère uniquement les données, <code>GameWindow</code> gère l'affichage, et <code>FileReader</code> gère les entrées/sorties.</li>
+        <li><strong>Open/Closed Principle (OCP) :</strong> Le code est ouvert à l'extension mais fermé à la modification. Nous pouvons ajouter de nouvelles règles de jeu (en implémentant l'interface <code>Rules</code>) ou de nouvelles stratégies de mise à jour (via <code>GridUpdater</code>) sans modifier le code existant de la classe <code>Game</code>.</li>
+        <li><strong>Dependency Inversion Principle (DIP) :</strong> Les modules de haut niveau (comme <code>Game</code>) dépendent d'abstractions (interfaces <code>Rules</code>, <code>GridUpdater</code>) et non d'implémentations concrètes.</li>
+    </ul>
+
+    <h3>3.2 Design Patterns Utilisés</h3>
+    
+    <h4>Pattern State (Gestion des Cellules)</h4>
+    <p>
+        Plutôt que d'utiliser un simple booléen pour l'état d'une cellule, nous avons utilisé le pattern <strong>State</strong>. 
+        La classe <span class="code-concept">Cell</span> possède un pointeur vers un état abstrait <span class="code-concept">CellState</span>.
+        Les classes concrètes <span class="code-concept">AliveState</span> et <span class="code-concept">DeadState</span> définissent le comportement spécifique.
+        Cela permet d'ajouter facilement de nouveaux états (ex: "Malade", "Immunisé") à l'avenir.
+    </p>
+
+    <h4>Pattern Strategy (Mise à jour de la Grille)</h4>
+    <p>
+        Le calcul de la génération suivante est délégué à une stratégie via l'interface <span class="code-concept">GridUpdater</span>.
+        Cela nous permet de changer l'algorithme de calcul à la volée (Runtime) :
+    </p>
+    <ul>
+        <li><span class="code-concept">SingleThreadUpdater</span> : Algorithme séquentiel classique.</li>
+        <li><span class="code-concept">MultiThreadUpdater</span> : Algorithme parallèle utilisant un pool de threads pour diviser la grille en sections traitées simultanément.</li>
+    </ul>
+
+    <h2>4. Diagrammes UML</h2>
+    <p>Les diagrammes suivants illustrent la structure et le comportement du système.</p>
+
+    <h3>4.1 Diagramme de Classes</h3>
+    <div class="diagram-box">
+        <img src="../Diagrammes_UML/Diagramme_classe.png" alt="Diagramme de Classes">
+        <p class="diagram-note">Figure 1 : Architecture statique du projet</p>
+        <div class="explanation-box">
+            On observe clairement la séparation en packages (Components, Services, Ihm). L'utilisation massive des interfaces (classes abstraites en italique) témoigne du découplage fort entre les composants.
+        </div>
+    </div>
+
+    <h3>4.2 Diagramme d'Activité</h3>
+    <div class="diagram-box">
+        <img src="../Diagrammes_UML/Diagramme_activite.png" alt="Diagramme d'Activité">
+        <p class="diagram-note">Figure 2 : Flux d'exécution global</p>
+        <div class="explanation-box">
+            Le diagramme montre les trois points d'entrée du programme. Le mode "Console" est optimisé pour le calcul pur (sans overhead graphique), tandis que le mode "Graphique" intègre une boucle événementielle pour l'interaction utilisateur.
+        </div>
+    </div>
+
+    <h3>4.3 Diagramme de Séquence</h3>
+    <div class="diagram-box">
+        <img src="../Diagrammes_UML/Diagramme_sequence.png" alt="Diagramme de Séquence">
+        <p class="diagram-note">Figure 3 : Détail d'une itération de simulation</p>
+        <div class="explanation-box">
+            <strong>Double Buffering :</strong> Ce diagramme met en évidence une optimisation cruciale. Lors du calcul de la génération N+1, nous lisons l'état N (lecture seule) et écrivons dans une grille tampon (écriture seule). À la fin, un <code>swap()</code> échange les pointeurs, évitant ainsi toute copie coûteuse de données.
+        </div>
+    </div>
+
+    <h2>5. Optimisations et Algorithmes</h2>
+    
+    <h3>5.1 Multi-threading (Worker Pool)</h3>
+    <p>
+        Pour les grandes grilles, le calcul séquentiel peut devenir lent. Nous avons implémenté un système de <strong>Worker Pool</strong>.
+        La grille est découpée en "chunks" (tranches horizontales). Chaque thread du pool calcule une tranche indépendamment.
+        Cette approche permet d'exploiter tous les cœurs du processeur (CPU) disponibles, réduisant drastiquement le temps de calcul par génération.
+    </p>
+
+    <h3>5.2 Gestion Mémoire</h3>
+    <p>
+        L'utilisation de <code>std::vector&lt;std::vector&lt;Cell&gt;&gt;</code> garantit une allocation contiguë et dynamique. 
+        De plus, l'usage systématique de références constantes (<code>const &</code>) dans les passages de paramètres évite les copies inutiles d'objets lourds comme la Grille.
+    </p>
+
+    <h2>6. Tests Unitaires</h2>
+    <p>
+        La fiabilité du moteur de jeu est assurée par une suite de tests unitaires (fichier <code>tests/test_grid.cpp</code>).
+        Nous validons automatiquement les cas critiques :
+    </p>
+    <ul>
+        <li><strong>Grille vide :</strong> Vérifie qu'aucune vie n'apparaît spontanément.</li>
+        <li><strong>Règle de Naissance :</strong> Vérifie qu'une cellule morte avec exactement 3 voisins devient vivante.</li>
+        <li><strong>Sous-population / Surpopulation :</strong> Vérifie la mort des cellules isolées ou étouffées.</li>
+        <li><strong>Stabilité :</strong> Vérifie que des motifs stables (comme le "Block") ne changent pas.</li>
+    </ul>
+
+    <div class="footer">
+        &copy; 2025 - Documentation Technique - Projet Jeu de la Vie
+    </div>
+
+</body>
+</html>

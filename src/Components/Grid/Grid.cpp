@@ -6,7 +6,6 @@
 /*
 Description du construceur, il initialise les différentes cellules
 indépendemment pour ne pas utiliser les copies et risquer une erreur mémoire
-Il va falloir changer cette partie pour initialiser avec les données du .txt
 */
 Grid::Grid(int w, int h) : width(w), height(h), cells(h, std::vector<Cell>()) {
 
@@ -56,7 +55,6 @@ void Grid::toggleCell(int row, int col) {
 
 
 // Compte le nombre de voisins vivants autour de la cellule (row, col)
-// GRILLE TORIQUE : les bords se rejoignent (comme un donut)
 int Grid::countLivingNeighbours(int row, int col) const {
 
     int count = 0;
@@ -70,12 +68,9 @@ int Grid::countLivingNeighbours(int row, int col) const {
 
     for (const auto& d : directions) {
         // Calcul de la position du voisin avec wraparound (modulo)
-        // Si newRow est négatif, on ajoute height pour revenir de l'autre côté
-        // Le modulo % assure que les valeurs restent dans [0, height-1] ou [0, width-1]
         int newRow = (row + d[0] + height) % height;
         int newCol = (col + d[1] + width) % width;
 
-        // Plus besoin de vérifier les limites car le modulo gère automatiquement
         if (cells[newRow][newCol].isAlive()) {
             count++;
         }

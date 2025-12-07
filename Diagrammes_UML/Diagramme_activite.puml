@@ -1,44 +1,62 @@
 @startuml
-title Diagramme d'Activite - Jeu de la Vie
+title Diagramme d'Activité - Flux Global
 
 start
 
 :Lancer le programme;
 
-:Lire fichier d'entree;
+:Afficher Menu Principal
+(1. Console, 2. Graphique, 3. Tests);
 
-if (Fichier valide ?) then (non)
-  :Afficher erreur;
-  stop
-endif
+switch (Choix Utilisateur)
 
-:Creer grille initiale\n(dimensions + cellules);
-
-:Initialiser regles Conway;
-
-:Demander nombre iterations;
-
-partition "Boucle principale" {
-  repeat
-    :Afficher grille actuelle;
-    
-    partition "Calcul nouvelle generation" {
-      :Pour chaque cellule\ncompter voisins vivants;
-      
-      :Appliquer regles Conway\n- Naissance: 3 voisins\n- Survie: 2-3 voisins\n- Mort: autres cas;
-      
-      :Mettre a jour grille;
+case ( 1. Mode Console )
+    partition "GameRunner" {
+        :Demander fichier d'entrée;
+        :Lire fichier (FileReader);
+        :Demander Stratégie
+        (Mono / Multi-thread);
+        :Demander nombre itérations;
+        
+        :Initialiser Game;
+        
+        while (Itérations restantes ?) is (Oui)
+            :Calculer génération suivante
+            (via GridUpdater);
+            :Sauvegarder grille
+            (FileWriter);
+        endwhile (Non)
     }
-    
-    :Sauvegarder etat\ndans fichier;
-    
-    :Incrementer compteur;
-    
-  repeat while (Iterations restantes ?) is (oui)
-  -> non;
-}
 
-:Afficher resultat final;
+case ( 2. Mode Graphique )
+    partition "GameWindow (SFML)" {
+        :Charger "input.txt";
+        :Initialiser Fenêtre Graphique;
+        
+        while (Fenêtre ouverte ?) is (Oui)
+            :Gérer Evénements
+            (Clavier / Souris);
+            
+            if (Temps écoulé ?) then (Oui)
+                :Calculer génération suivante
+                (via GridUpdater);
+            endif
+            
+            :Dessiner Grille;
+            :Afficher Fenêtre;
+        endwhile (Non)
+        :Fermer Fenêtre;
+    }
+
+case ( 3. Tests Unitaires )
+    :Lancer TestRunner;
+    :Exécuter tous les tests;
+    :Afficher résultats;
+
+case ( Autre )
+    :Afficher Erreur;
+
+endswitch
 
 stop
 

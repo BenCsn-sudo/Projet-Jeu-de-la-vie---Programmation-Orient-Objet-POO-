@@ -5,8 +5,6 @@
 #include "../Components/Cell/AliveState.h"
 #include "../Components/Cell/DeadState.h"
 #include "../Services/IO/FileReader.h"
-
-// --- AJOUT : Nécessaire pour faire évoluer la grille ---
 #include "../Components/Updaters/SingleThreadUpdater.h"
 
 using namespace std;
@@ -15,12 +13,10 @@ using namespace std;
 void test_empty_grid() {
     Grid grid(5, 5);
     StandardRule rule;
-    SingleThreadUpdater updater; // On utilise le mode Mono-thread pour les tests
+    SingleThreadUpdater updater;
 
-    // MODIFICATION : Appel via l'updater
     updater.update(grid, rule);
 
-    // Verifier que toutes les cellules restent mortes
     for (int row = 0; row < 5; ++row) {
         for (int col = 0; col < 5; ++col) {
             assert(!grid.getCell(row, col).isAlive());
@@ -36,14 +32,12 @@ void test_birth_rule() {
     StandardRule rule;
     SingleThreadUpdater updater;
 
-    // Configuration : 3 cellules vivantes en ligne
     grid.getCell(0, 0).setState(new AliveState());
     grid.getCell(0, 1).setState(new AliveState());
     grid.getCell(0, 2).setState(new AliveState());
 
     updater.update(grid, rule);
 
-    // La cellule (1,1) doit naitre car elle a 3 voisins
     assert(grid.getCell(1, 1).isAlive());
 
     cout << "[OK] Test 2 : Regle de naissance (3 voisins)" << endl;
@@ -55,13 +49,11 @@ void test_death_by_underpopulation() {
     StandardRule rule;
     SingleThreadUpdater updater;
 
-    // Configuration : 1 cellule vivante avec seulement 1 voisin
     grid.getCell(1, 1).setState(new AliveState());
     grid.getCell(0, 0).setState(new AliveState());
 
     updater.update(grid, rule);
 
-    // La cellule (1,1) meurt car elle a moins de 2 voisins
     assert(!grid.getCell(1, 1).isAlive());
 
     cout << "[OK] Test 3 : Mort par sous-population (<2 voisins)" << endl;
@@ -73,14 +65,12 @@ void test_survival_rule() {
     StandardRule rule;
     SingleThreadUpdater updater;
 
-    // Configuration : 1 cellule vivante avec 2 voisins
     grid.getCell(1, 1).setState(new AliveState());
     grid.getCell(0, 0).setState(new AliveState());
     grid.getCell(0, 1).setState(new AliveState());
 
     updater.update(grid, rule);
 
-    // La cellule (1,1) survit car elle a 2 voisins
     assert(grid.getCell(1, 1).isAlive());
 
     cout << "[OK] Test 4 : Survie avec 2 voisins" << endl;
@@ -92,7 +82,6 @@ void test_death_by_overpopulation() {
     StandardRule rule;
     SingleThreadUpdater updater;
 
-    // Configuration : 1 cellule vivante avec 4 voisins
     grid.getCell(1, 1).setState(new AliveState());
     grid.getCell(0, 0).setState(new AliveState());
     grid.getCell(0, 1).setState(new AliveState());
@@ -101,7 +90,6 @@ void test_death_by_overpopulation() {
 
     updater.update(grid, rule);
 
-    // La cellule (1,1) meurt car elle a plus de 3 voisins
     assert(!grid.getCell(1, 1).isAlive());
 
     cout << "[OK] Test 5 : Mort par surpopulation (>3 voisins)" << endl;
@@ -113,7 +101,6 @@ void test_stable_block() {
     StandardRule rule;
     SingleThreadUpdater updater;
 
-    // Configuration : bloc 2x2 (nature morte)
     grid.getCell(1, 1).setState(new AliveState());
     grid.getCell(1, 2).setState(new AliveState());
     grid.getCell(2, 1).setState(new AliveState());
@@ -121,7 +108,6 @@ void test_stable_block() {
 
     updater.update(grid, rule);
 
-    // Le bloc reste identique
     assert(grid.getCell(1, 1).isAlive());
     assert(grid.getCell(1, 2).isAlive());
     assert(grid.getCell(2, 1).isAlive());
@@ -131,11 +117,9 @@ void test_stable_block() {
 }
 
 // Test 7 : Comptage de 8 voisins
-// (Pas besoin d'updater ici car on ne fait pas avancer le temps)
 void test_neighbour_count() {
     Grid grid(3, 3);
 
-    // Configuration : 8 cellules vivantes autour de (1,1)
     grid.getCell(0, 0).setState(new AliveState());
     grid.getCell(0, 1).setState(new AliveState());
     grid.getCell(0, 2).setState(new AliveState());
@@ -155,37 +139,26 @@ void test_neighbour_count() {
 void test_file_reading() {
     FileReader reader;
 
-    // Lit le fichier input.txt (Assure-toi qu'il existe ou adapte le chemin)
-    // Note : Pour les tests unitaires, c'est souvent mieux de créer un fichier temporaire
-    // mais ici on garde ta logique.
-    Grid grid = reader.read("input.txt");
+    // Utilisation de input_merci.txt qui est present dans le dossier src
+    Grid grid = reader.read("input_merci.txt");
 
-    // Verifie que la grille est bien chargee (si input.txt existe)
-    if (grid.getHeight() > 0) {
-        assert(grid.getWidth() > 0);
-        cout << "[OK] Test 8 : Lecture fichier input.txt" << endl;
+    if (grid.getHeight() > 0 && grid.getWidth() > 0) {
+        cout << "[OK] Test 8 : Lecture fichier input_merci.txt" << endl;
     } else {
-        cout << "[SKIP] Test 8 : Fichier input.txt introuvable ou vide" << endl;
+        throw runtime_error("Fichier input_merci.txt introuvable ou vide");
     }
 }
 
-// Test 9 : Grille torique (bonus)
+// Test 9 : Grille torique
 void test_toroidal_grid() {
     Grid grid(5, 5);
 
-    // Note : Ce test vérifie le comptage, pas l'évolution, donc pas besoin d'updater
-    // SI et SEULEMENT SI tu as appliqué ma correction avec les modulos (%) dans Grid.cpp
-
-    // Configuration : cellules aux coins de la grille
     grid.getCell(0, 0).setState(new AliveState());
     grid.getCell(0, 4).setState(new AliveState());
     grid.getCell(4, 0).setState(new AliveState());
     grid.getCell(4, 4).setState(new AliveState());
 
-    // Dans une grille torique, chaque coin a 3 voisins (les 3 autres coins)
     int count_corner = grid.countLivingNeighbours(0, 0);
-
-    // ASSERTION ADAPTÉE : Si tu n'as pas encore mis le code torique, ce test échouera
     assert(count_corner == 3);
 
     cout << "[OK] Test 9 : Grille torique (wraparound)" << endl;
@@ -197,24 +170,12 @@ void test_blinker_oscillator() {
     StandardRule rule;
     SingleThreadUpdater updater;
 
-    // Configuration : Blinker vertical
-    // . . . . .
-    // . . X . .
-    // . . X . .
-    // . . X . .
-    // . . . . .
     grid.getCell(1, 2).setState(new AliveState());
     grid.getCell(2, 2).setState(new AliveState());
     grid.getCell(3, 2).setState(new AliveState());
 
     updater.update(grid, rule);
 
-    // Apres 1 generation : Blinker horizontal
-    // . . . . .
-    // . . . . .
-    // . X X X .
-    // . . . . .
-    // . . . . .
     assert(grid.getCell(2, 1).isAlive());
     assert(grid.getCell(2, 2).isAlive());
     assert(grid.getCell(2, 3).isAlive());

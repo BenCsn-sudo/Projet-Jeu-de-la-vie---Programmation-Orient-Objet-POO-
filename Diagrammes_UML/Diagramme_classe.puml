@@ -2,6 +2,7 @@
 
 skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
+skinparam linetype ortho
 
 ' ===== PACKAGE: Components/Cell =====
 package "Components::Cell" #LightBlue {
@@ -23,8 +24,6 @@ package "Components::Cell" #LightBlue {
     class Cell {
         - state : unique_ptr<CellState>
         + Cell(CellState*)
-        + Cell(const Cell&)
-        + operator=(const Cell&) : Cell&
         + isAlive() : bool
         + setState(CellState*) : void
     }
@@ -54,18 +53,45 @@ package "Components::Grid" #LightYellow {
         - height : int
         - cells : vector<vector<Cell>>
         + Grid(int, int)
-        + print() : void
         + setAlive(int, int) : void
         + setDead(int, int) : void
-        + getWidth() : int
-        + getHeight() : int
+        + toggleCell(int, int) : void
         + getCell(int, int) : Cell&
         + countLivingNeighbours(int, int) : int
-        + nextGeneration(const Rules&) : void
+        + swap(Grid&) : void
     }
     
     Grid *-- Cell
-    Grid ..> Rules
+}
+
+' ===== PACKAGE: Services =====
+package "Services" #PaleGreen {
+    class WorkerPool {
+        + getInstance() : WorkerPool&
+        + enqueue(function) : void
+    }
+}
+
+' ===== PACKAGE: Components/Updaters =====
+package "Components::Updaters" #Plum {
+    abstract class GridUpdater {
+        + {abstract} update(Grid&, const Rules&) : void
+        + {abstract} getName() : string
+    }
+
+    class SingleThreadUpdater {
+        + update(Grid&, const Rules&) : void
+    }
+
+    class MultiThreadUpdater {
+        + update(Grid&, const Rules&) : void
+    }
+
+    GridUpdater <|-- SingleThreadUpdater
+    GridUpdater <|-- MultiThreadUpdater
+    GridUpdater ..> Grid
+    GridUpdater ..> Rules
+    MultiThreadUpdater ..> WorkerPool : <<uses>>
 }
 
 ' ===== PACKAGE: Components =====
@@ -73,82 +99,66 @@ package "Components" #Wheat {
     class Game {
         - grid : Grid
         - rule : const Rules&
+        - updater : unique_ptr<GridUpdater>
         - iterations : int
-        + Game(const Grid&, const Rules&, int)
+        + Game(Grid, Rules&, int, unique_ptr<GridUpdater>)
         + nextStep() : void
         + print() : void
-        + getGrid() : const Grid&
     }
     
     Game *-- Grid
     Game --> Rules
+    Game *-- GridUpdater
 }
 
 ' ===== PACKAGE: Services/IO =====
 package "Services::IO" #LightCoral {
     class FileReader {
-        + read(const string&) : Grid
+        + read(string) : Grid
     }
     
     class FileWriter {
-        + write(const Grid&, const string&) : void
+        + write(Grid, string) : void
     }
     
     class FileName {
-        + extractBaseName(const string&) : string
-        + generateOutputName(const string&, int) : string
+        + generateOutputName(string, int) : string
     }
     
     class FolderManager {
-        + createOutputFolder(const string&) : void
+        + createOutputFolder(string) : void
     }
     
-    FileReader ..> Grid : <<create>>
-    FileWriter ..> Grid : <<use>>
+    FileReader ..> Grid : <<creates>>
+    FileWriter ..> Grid : <<reads>>
 }
 
-' ===== PACKAGE: Services =====
-package "Services" #PaleGreen {
+' ===== PACKAGE: Services (Runner) =====
+package "Services " as ServicesRunner #PaleGreen {
     class GameRunner {
-        - inputFile : string
-        - maxIterations : int
-        + GameRunner()
         + run() : void
     }
     
-    GameRunner --> FileReader
-    GameRunner --> FileWriter
-    GameRunner --> FileName
-    GameRunner --> FolderManager
-    GameRunner --> Game
+    GameRunner ..> FileReader
+    GameRunner ..> FileWriter
+    GameRunner ..> Game
 }
 
 ' ===== PACKAGE: Ihm =====
 package "Ihm" #Lavender {
     class GameWindow {
-        - window : sf::RenderWindow
-        - grid : Grid
+        - grid : Grid&
         - rule : const Rules&
-        - windowWidth : int
-        - windowHeight : int
-        - delay : int
-        + GameWindow(Grid&, const Rules&, int, int)
+        - updater : unique_ptr<GridUpdater>
+        + GameWindow(Grid&, Rules&, unique_ptr<GridUpdater>)
         + run() : void
-        - draw() : void
-        - handleEvents() : void
+        - update() : void
+        - drawGrid() : void
     }
     
     GameWindow --> Grid
     GameWindow --> Rules
+    GameWindow *-- GridUpdater
 }
-
-' ===== Légende =====
-legend right
-  |= Symbole |= Signification |
-  | <back:white>───▷</back> | Héritage |
-  | <back:white>───◆</back> | Composition |
-  | <back:white>───></back> | Association |
-  | <back:white>...></back> | Dépendance |
-endlegend
 
 @enduml
