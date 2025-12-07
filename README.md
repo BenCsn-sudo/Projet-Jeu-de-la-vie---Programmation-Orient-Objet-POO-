@@ -568,9 +568,9 @@ Generes apres execution :
 ---
 
 ## Auteurs
-
+- Benjamin Cousin, Hatim Haddou, Corentin Cartalier, Olivier Rousseau
 - Projet realise dans le cadre du cours de **Programmation Orientee Objet (POO)**
-- Annee universitaire 2024-2025
+- Annee universitaire 2025-2026
 
 ---
 
