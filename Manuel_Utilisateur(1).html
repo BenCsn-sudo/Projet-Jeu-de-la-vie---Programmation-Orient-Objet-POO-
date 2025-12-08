@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuel Utilisateur - Jeu de la Vie</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #16a085;
+            margin-top: 20px;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border: 1px solid #e9ecef;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+            color: #e83e8c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Manuel d'Utilisation</h1>
+    <p style="text-align: center; font-style: italic;">Projet C++ - Jeu de la Vie de Conway</p>
+
+    <h2>1. Introduction</h2>
+    <p>
+        Le <strong>Jeu de la Vie</strong> est un automate cellulaire imaginé par John Horton Conway en 1970. 
+        C'est un jeu à zéro joueur, ce qui signifie que son évolution est déterminée par son état initial et ne nécessite aucune intervention humaine.
+        Ce logiciel vous permet de simuler cet univers, d'observer des motifs fascinants et d'interagir avec la simulation.
+    </p>
+
+    <h2>2. Installation et Lancement</h2>
+    <p>Le programme est fourni sous la forme d'un exécutable portable.</p>
+    <ol>
+        <li>Assurez-vous d'avoir le fichier <code>jeu_de_la_vie.exe</code>.</li>
+        <li>Vérifiez que le fichier de configuration <code>input.txt</code> est présent dans le même dossier (ce fichier contient la grille initiale).</li>
+        <li>Lancez <code>jeu_de_la_vie.exe</code>.</li>
+    </ol>
+
+    <h2>3. Modes de Jeu</h2>
+    <p>Au démarrage, une console s'ouvre et vous propose trois modes :</p>
+
+    <h3>1. Mode Console</h3>
+    <p>
+        Ce mode exécute la simulation en arrière-plan. Il est conçu pour la performance et la génération de données.
+        Les états successifs de la grille sont sauvegardés dans des fichiers texte dans un dossier dédié.
+    </p>
+
+    <h3>2. Mode Graphique (Recommandé)</h3>
+    <p>
+        Ce mode ouvre une fenêtre graphique interactive. C'est le mode idéal pour observer l'évolution des cellules en temps réel.
+        Vous pourrez voir la grille, mettre en pause, accélérer/ralentir et dessiner des motifs.
+    </p>
+
+    <h3>3. Mode Test Unitaire</h3>
+    <p>
+        Ce mode lance une suite de tests automatiques pour vérifier le bon fonctionnement interne du programme (logique de la grille, règles, chargement de fichiers).
+    </p>
+
+    <h2>4. Contrôles (Mode Graphique)</h2>
+    <p>Voici les commandes disponibles lorsque la fenêtre graphique est active :</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Commande</th>
+                <th>Touche / Action</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Pause / Lecture</strong></td>
+                <td><code>Espace</code></td>
+                <td>Met la simulation en pause ou la relance.</td>
+            </tr>
+            <tr>
+                <td><strong>Accélérer</strong></td>
+                <td><code>Flèche Haut</code></td>
+                <td>Réduit le délai entre les générations (plus rapide).</td>
+            </tr>
+            <tr>
+                <td><strong>Ralentir</strong></td>
+                <td><code>Flèche Bas</code></td>
+                <td>Augmente le délai entre les générations (plus lent).</td>
+            </tr>
+            <tr>
+                <td><strong>Dessiner / Tuer</strong></td>
+                <td>Clic Gauche</td>
+                <td>Inverse l'état de la cellule sous la souris (nécessite la <strong>Pause</strong>).</td>
+            </tr>
+            <tr>
+                <td><strong>Placer un motif</strong></td>
+                <td>Clic Droit</td>
+                <td>Place le motif sélectionné sous la souris (nécessite la <strong>Pause</strong>).</td>
+            </tr>
+            <tr>
+                <td><strong>Effacer la grille</strong></td>
+                <td><code>D</code></td>
+                <td>Efface toutes les cellules et remet la grille à l'état vide (nécessite la <strong>Pause</strong>).</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Sélection des Motifs</h3>
+    <p>Utilisez ces touches pour choisir quel motif sera placé avec le <strong>Clic Droit</strong> :</p>
+    <ul>
+        <li><code>G</code> : <strong>Glider</strong> (Planeur) - Un petit vaisseau qui se déplace.</li>
+        <li><code>B</code> : <strong>Blinker</strong> (Clignotant) - Une barre qui oscille.</li>
+        <li><code>L</code> : <strong>Block</strong> (Bloc) - Un carré stable.</li>
+        <li><code>N</code> : <strong>Aucun</strong> - Désactive l'outil de placement.</li>
+        <li><code>C</code> : Place immédiatement le motif sélectionné au <strong>centre</strong> de la grille.</li>
+    </ul>
+
+    <div class="note">
+        <strong>Note :</strong> La grille est "torique". Cela signifie que les bords sont connectés : une cellule qui sort à droite réapparaît à gauche, et une cellule qui sort en haut réapparaît en bas.
+    </div>
+
+    <h2>5. Règles du Jeu</h2>
+    <p>L'univers évolue génération par génération selon des règles simples :</p>
+    <ul>
+        <li>Une cellule vivante possédant 2 ou 3 voisines vivantes reste vivante (Survie).</li>
+        <li>Une cellule morte possédant exactement 3 voisines vivantes devient vivante (Naissance).</li>
+        <li>Dans tous les autres cas, la cellule meurt ou reste morte (Isolement ou Surpopulation).</li>
+    </ul>
+
+    <div class="footer">
+        &copy; 2025 - Projet Programmation Orientée Objet
+    </div>
+
+</body>
+</html>
